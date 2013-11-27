@@ -1,0 +1,33 @@
+{
+  "name": "pastebin-js",
+  "version": "0.0.1",
+  "description": "NodeJS module for Pastebin API",
+  "main": "index",
+  "bin" : {
+    "pastebin" : "./bin/pastebin"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pastebin"
+  ],
+  "dependencies": {
+    "underscore" : "*",
+    "request" : "*",
+    "xml2js" : "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/j3lte/pastebin-js"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "readmeFilename": "README.md",
+  "author": {
+    "name": "J.W. Lagendijk",
+    "email": "jwlagendijk@gmail.com"
+  },
+  "license": "MIT"
+}
