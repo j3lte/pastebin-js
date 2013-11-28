@@ -28,10 +28,16 @@ var PastebinAPI = require('./index'),
       'api_user_name' : 'PastebinUserName',
       'api_user_password' : 'PastebinPassword'
     });
-    
-pastebin.createPasteFromFile("./uploadthistopastebin.txt", "pastebin-js test", null, 1, "N", function (data) {
-    console.log(data);
-});
+
+pastebin
+    .createPasteFromFile("./uploadthistopastebin.txt", "pastebin-js test", null, 1, "N")
+    .then(function (data) {
+        // we have succesfully pasted it. Data contains the url
+        console.log(data);
+    })
+    .fail(function (err) {
+        console.log(err);
+    });
 ```
 
 ## Methods
@@ -40,7 +46,6 @@ Coming soon!
 
 ### This is work in progress
 
-* I am still rewriting this module. It works, but I'd rather use promises to keep it clean
 * Adding tests
 
 ## License

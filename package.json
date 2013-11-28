@@ -1,6 +1,6 @@
 {
   "name": "pastebin-js",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "NodeJS module for Pastebin API",
   "main": "index",
   "bin" : {
@@ -15,7 +15,8 @@
   "dependencies": {
     "underscore" : "*",
     "request" : "*",
-    "xml2js" : "*"
+    "xml2js" : "*",
+    "q": "~0.9.7"
   },
   "repository": {
     "type": "git",
