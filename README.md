@@ -8,7 +8,40 @@ var PastebinAPI = require('pastebin-js'),
     pastebin = new PastebinAPI('devkey');
 ```
 
-Documentation coming soon!
+
+## Features
+
+* getPaste : get a raw paste
+* createAPIuserKey : get a userkey for the authenticated user
+* listUserPastes : get a list of the pastes from the authenticated user
+* getUserInfo : get a list of info from the authenticated user
+* listTrendingPastes : get a list of the trending pastes on Pastebin
+* createPaste : create a paste
+* createPasteFromFile : read a file (UTF8) and paste it
+
+## Example
+
+```js
+var PastebinAPI = require('./index'),
+    pastebin = new PastebinAPI({
+      'api_dev_key' : 'xxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      'api_user_name' : 'PastebinUserName',
+      'api_user_password' : 'PastebinPassword'
+    });
+    
+pastebin.createPasteFromFile("./uploadthistopastebin.txt", "pastebin-js test", null, 1, "N", function (data) {
+    console.log(data);
+});
+```
+
+## Methods
+
+Coming soon!
+
+### This is work in progress
+
+* I am still rewriting this module. It works, but I'd rather use promises to keep it clean
+* Adding tests
 
 ## License
 
