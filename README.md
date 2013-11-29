@@ -47,6 +47,7 @@ Coming soon!
 ### This is work in progress
 
 * Adding tests
+* Handle errors from Pastebin (it only has a error in text, not in the http header!)
 
 ## License
 
