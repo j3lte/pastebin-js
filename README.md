@@ -24,7 +24,7 @@ var PastebinAPI = require('pastebin-js'),
 ```js
 var PastebinAPI = require('./index'),
     pastebin = new PastebinAPI({
-      'api_dev_key' : 'xxxxxxxxxxxxxxxxxxxxxxxxxxx',
+      'api_dev_key' : 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
       'api_user_name' : 'PastebinUserName',
       'api_user_password' : 'PastebinPassword'
     });
@@ -40,14 +40,79 @@ pastebin
     });
 ```
 
-## Methods
+## API
 
-Coming soon!
+**PastebinAPI()** : Constructor.
 
-### This is work in progress
+```js
+var PastebinAPI = require('./index');
 
-* Adding tests
-* Handle errors from Pastebin (it only has a error in text, not in the http header!)
+// Without any parameter you can only use getPaste!
+var pastebin = new PastebinAPI();
+
+// Provide a developer key as string, this key can be found when logged in.
+// This can be found here: http://pastebin.com/api#1
+var pastebin = new PastebinAPI('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+
+// Provide an object containing the api_dev_key, api_user_name and api_user_password
+pastebin = new PastebinAPI({
+                'api_dev_key' : 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+                'api_user_name' : 'PastebinUserName',
+                'api_user_password' : 'PastebinPassword'
+               }); 
+```
+
+### Methods
+
+**pastebin.getPaste(pasteID)** : get a raw paste, providing the ``pasteID``
+
+```js
+pastebin
+  .getPaste('76b2yNRt')
+  .then(function (data) {
+    // data contains the raw paste
+    console.log(data);
+  })
+  .fail(function (err) {
+    // Something went wrong
+    console.log(err);
+  })
+```
+
+**pastebin.createPaste(text, title, format, privacy, expiration)** : creates a paste. ``text`` is required, other
+arguments are optional. For ``format``, ``privacy`` and ``expiration``, have a look at **lib/config.js** for the allowed input.
+If ``privacy`` is set to **2**, you will need to provide a username && password in the constructor (Pastebin requires a api_user_key)
+
+```js
+pastebin
+  .createPaste("Test from pastebin-js", "pastebin-js")
+  .then(function (data) {
+    // paste succesfully created, data contains the paste url
+    console.log(data);
+  })
+  .fail(function (err) {
+    // Something went wrong
+    console.log(err);
+  })
+```
+
+**pastebin.createPasteFromFile(filename, title, format, privacy, expiration)** : tries to read the file provided in ``filename``
+(UTF-8) and paste it. Works the same as previous method.
+
+**pastebin.deletePaste()** : NOT YET IMPLEMENTED! (Will be in future version)
+
+**pastebin.getUserInfo()** : gets the userinfo 
+
+**pastebin.listUserPastes(limit)** : gets a list of pastes from the user. ``limit`` is optional, from 1 - 100 (default: 50)
+
+**pastebin.listTrendingPastes()** : gets a list of trending pastes on Pastebin
+
+
+## Bugs / issues
+
+Please, if you find any bugs, or are a way better developer than I am (as in, you are thinking 'spaghetti' when looking at my
+code), feel free to create an issue or provide me with some pull requests! This is my first full module ever written for
+NodeJS.
 
 ## License
 
