@@ -4,7 +4,7 @@
     "description": "NodeJS module for Pastebin API",
     "main": "index",
     "bin": {
-        "pastebin": "./bin/pastebin"
+        "pastebin": "./bin/pastebin.js"
     },
     "scripts": {
         "test": "grunt"
