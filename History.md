@@ -1,8 +1,10 @@
 0.1.4 / 2014-04-06
+==================
 
-  * Attempt to fix issue installing pastebin-js
+  * Attempt to fix issue installing pastebin-js, pushed to new version
 
 0.1.3 / 2013-11-29
+==================
 
   * Added documentation!
 
