@@ -18,6 +18,7 @@ var PastebinAPI = require('pastebin-js'),
 * listTrendingPastes : get a list of the trending pastes on Pastebin
 * createPaste : create a paste
 * createPasteFromFile : read a file (UTF8) and paste it
+* deletePaste : delete a paste created by the user
 
 ## Example
 
@@ -99,7 +100,7 @@ pastebin
 **pastebin.createPasteFromFile(filename, title, format, privacy, expiration)** : tries to read the file provided in ``filename``
 (UTF-8) and paste it. Works the same as previous method.
 
-**pastebin.deletePaste()** : NOT YET IMPLEMENTED! (Will be in future version)
+**pastebin.deletePaste(pasteID)** : Tries to delete a paste, created by the user
 
 **pastebin.getUserInfo()** : gets the userinfo 
 

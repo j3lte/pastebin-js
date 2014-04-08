@@ -21,6 +21,7 @@ function Pastebin(config) {
 
 /**
  * Get a paste
+ * @param  String   id  Id of the paste
  */
 Pastebin.prototype.getPaste = function (id) {
     var _this = this,
@@ -33,14 +34,19 @@ Pastebin.prototype.getPaste = function (id) {
 
     method
         .get(getUrl, null)
-        .then(deferred.resolve)
-        .fail(deferred.reject);
+            .then(deferred.resolve)
+            .fail(deferred.reject);
 
     return deferred.promise;
 };
 
 /**
- * Create a paste!
+ * Create a paste
+ * @param  String   text       Text to be pasted
+ * @param  String   title      Title of the paste (optional)
+ * @param  String   format     Format of the paste, for syntax highlighting. See /lib/config.js (optional)
+ * @param  Number   privacy    Privacylevel of the paste (0 = public, 1 = unlisted and 2 = private) (optional, default = 0)
+ * @param  String   expiration Expiration time of the paste See /lib/config.js
  */
 Pastebin.prototype.createPaste = function (text, title, format, privacy, expiration) {
     var _this = this,
@@ -83,8 +89,8 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
                     .then(function () {
                         _this
                             .createPaste(text, title, format, privacy, expiration)
-                            .then(deferred.resolve)
-                            .fail(deferred.reject);
+                                .then(deferred.resolve)
+                                .fail(deferred.reject);
                     });
             } else {
                 deferred.reject(new Error("Error! For this privacy level you need to be logged in! Provide username and password!"));
@@ -115,7 +121,12 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
 };
 
 /**
- * Create a paste from file
+ * Create a paste from a file
+ * @param  String   filename   Location of the filename
+ * @param  String   title      Title of the paste (optional)
+ * @param  String   format     Format of the paste, for syntax highlighting. See /lib/config.js (optional)
+ * @param  Number   privacy    Privacylevel of the paste (0 = public, 1 = unlisted and 2 = private) (optional, default = 0)
+ * @param  String   expiration Expiration time of the paste See /lib/config.js
  */
 Pastebin.prototype.createPasteFromFile = function (filename, title, format, privacy, expiration) {
     var _this = this,
@@ -132,8 +143,8 @@ Pastebin.prototype.createPasteFromFile = function (filename, title, format, priv
 
         _this
             .createPaste(data, title, format, privacy, expiration)
-            .then(deferred.resolve)
-            .fail(deferred.reject);
+                .then(deferred.resolve)
+                .fail(deferred.reject);
 
     });
 
@@ -141,15 +152,45 @@ Pastebin.prototype.createPasteFromFile = function (filename, title, format, priv
 };
 
 /**
- * Delete a paste created by user
- * NOT YET IMPLEMENTED
+ * Delete a paste that is created by the user
+ * @param  String   pasteID     The id of the userpaste (http://pastebin.com/[id])
  */
-Pastebin.prototype.deletePaste = function () {
+Pastebin.prototype.deletePaste = function (pasteID) {
     var _this = this,
+        p = {},
         deferred = Q.defer();
 
-    // To be implemented
-    deferred.resolve(true);
+    if (!pasteID) {
+        deferred.reject(new Error("Please provide a paste ID to delete"));
+    }
+
+    p.api_option = 'delete';
+    p.api_dev_key = _this.config.api_dev_key;
+    p.api_paste_key = pasteID;
+
+    if (_this.config.api_user_key) {
+
+        p.api_user_key = _this.config.api_user_key;
+
+        _this
+            ._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, p)
+                .then(function (data) {
+                    deferred.resolve(data);
+                })
+                .fail(deferred.reject);
+
+    } else if (_this.config.api_user_name !== null && _this.config.api_user_password !== null) {
+        _this
+            .createAPIuserKey()
+                .then(function () {
+                    _this
+                        .deletePaste(pasteID)
+                            .then(deferred.resolve)
+                            .fail(deferred.reject);
+                });
+    } else {
+        deferred.reject(new Error("Error! Deleting a paste created by the user needs username and password"));
+    }
 
     return deferred.promise;
 };
@@ -182,7 +223,8 @@ Pastebin.prototype.createAPIuserKey = function () {
 };
 
 /**
- * Lists the user pastes
+ * List the pastes that are created by the user
+ * @param  Number   limit   Set the limit of pastes
  */
 Pastebin.prototype.listUserPastes = function (limit) {
     var _this = this,
@@ -194,12 +236,13 @@ Pastebin.prototype.listUserPastes = function (limit) {
 
         _this
             .createAPIuserKey()
-            .then(function () {
-                _this
-                    .listUserPastes(limit)
-                    .then(deferred.resolve)
-                    .fail(deferred.reject);
-            });
+                .then(function () {
+                    _this
+                        .listUserPastes(limit)
+                        .then(deferred.resolve)
+                        .fail(deferred.reject);
+                })
+                .fail(deferred.reject);
 
     } else {
 
@@ -213,8 +256,8 @@ Pastebin.prototype.listUserPastes = function (limit) {
             .then(function (data) {
                 _this
                     ._parsePastes(data)
-                    .then(deferred.resolve)
-                    .fail(deferred.reject);
+                        .then(deferred.resolve)
+                        .fail(deferred.reject);
             })
             .fail(deferred.reject);
     }
@@ -235,13 +278,13 @@ Pastebin.prototype.listTrendingPastes = function () {
 
     _this
         ._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, params)
-        .then(function (data) {
-            _this
-                ._parsePastes(data)
-                .then(deferred.resolve)
-                .fail(deferred.reject);
-        })
-        .fail(deferred.reject);
+            .then(function (data) {
+                _this
+                    ._parsePastes(data)
+                        .then(deferred.resolve)
+                        .fail(deferred.reject);
+            })
+            .fail(deferred.reject);
 
     return deferred.promise;
 };
@@ -260,12 +303,13 @@ Pastebin.prototype.getUserInfo = function () {
     if (!_this.config.api_user_key) {
         _this
             .createAPIuserKey()
-            .then(function () {
-                _this
-                    .getUserInfo()
-                    .then(deferred.resolve)
-                    .fail(deferred.reject);
-            });
+                .then(function () {
+                    _this
+                        .getUserInfo()
+                        .then(deferred.resolve)
+                        .fail(deferred.reject);
+                })
+                .fail(deferred.reject);
     } else {
         params.api_user_key = _this.config.api_user_key;
 
@@ -396,8 +440,8 @@ Pastebin.prototype._getApi = function (path, params) {
 
     method
         .get(path, params)
-        .then(deferred.resolve)
-        .fail(deferred.reject);
+            .then(deferred.resolve)
+            .fail(deferred.reject);
 
     return deferred.promise;
 };
@@ -410,8 +454,8 @@ Pastebin.prototype._postApi = function (path, params) {
 
     method
         .post(path, params)
-        .then(deferred.resolve)
-        .fail(deferred.reject);
+            .then(deferred.resolve)
+            .fail(deferred.reject);
 
     return deferred.promise;
 };

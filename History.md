@@ -1,3 +1,9 @@
+0.1.5 / 2014-04-06
+==================
+
+  * Finishing deletePaste
+  * Adding more descriptive comments for methods, needs more work in the future
+
 0.1.4 / 2014-04-06
 ==================
 
