@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Pastebin-js by j3lte</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Pastebin-js</h1>
+        <h2>NodeJS module for Pastebin API</h2>
+        <a href="https://github.com/j3lte/pastebin-js" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="pastebin-js" class="anchor" href="#pastebin-js"><span class="octicon octicon-link"></span></a>pastebin-js</h1>
+
+<p>NodeJS module to access the Pastebin API</p>
+
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">PastebinAPI</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'pastebin-js'</span><span class="p">),</span>
+    <span class="nx">pastebin</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PastebinAPI</span><span class="p">(</span><span class="s1">'devkey'</span><span class="p">);</span>
+</pre></div>
+
+<h2>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h2>
+
+<ul>
+<li>getPaste : get a raw paste</li>
+<li>createAPIuserKey : get a userkey for the authenticated user</li>
+<li>listUserPastes : get a list of the pastes from the authenticated user</li>
+<li>getUserInfo : get a list of info from the authenticated user</li>
+<li>listTrendingPastes : get a list of the trending pastes on Pastebin</li>
+<li>createPaste : create a paste</li>
+<li>createPasteFromFile : read a file (UTF8) and paste it</li>
+<li>deletePaste : delete a paste created by the user</li>
+</ul><h2>
+<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a>Example</h2>
+
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">PastebinAPI</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./index'</span><span class="p">),</span>
+    <span class="nx">pastebin</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PastebinAPI</span><span class="p">({</span>
+      <span class="s1">'api_dev_key'</span> <span class="o">:</span> <span class="s1">'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'</span><span class="p">,</span>
+      <span class="s1">'api_user_name'</span> <span class="o">:</span> <span class="s1">'PastebinUserName'</span><span class="p">,</span>
+      <span class="s1">'api_user_password'</span> <span class="o">:</span> <span class="s1">'PastebinPassword'</span>
+    <span class="p">});</span>
+
+<span class="nx">pastebin</span>
+    <span class="p">.</span><span class="nx">createPasteFromFile</span><span class="p">(</span><span class="s2">"./uploadthistopastebin.txt"</span><span class="p">,</span> <span class="s2">"pastebin-js test"</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"N"</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// we have succesfully pasted it. Data contains the url</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+    <span class="p">})</span>
+    <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="p">});</span>
+</pre></div>
+
+<h2>
+<a name="api" class="anchor" href="#api"><span class="octicon octicon-link"></span></a>API</h2>
+
+<p><strong>PastebinAPI()</strong> : Constructor.</p>
+
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">PastebinAPI</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'./index'</span><span class="p">);</span>
+
+<span class="c1">// Without any parameter you can only use getPaste!</span>
+<span class="kd">var</span> <span class="nx">pastebin</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PastebinAPI</span><span class="p">();</span>
+
+<span class="c1">// Provide a developer key as string, this key can be found when logged in.</span>
+<span class="c1">// This can be found here: http://pastebin.com/api#1</span>
+<span class="kd">var</span> <span class="nx">pastebin</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PastebinAPI</span><span class="p">(</span><span class="s1">'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'</span><span class="p">);</span>
+
+<span class="c1">// Provide an object containing the api_dev_key, api_user_name and api_user_password</span>
+<span class="nx">pastebin</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PastebinAPI</span><span class="p">({</span>
+                <span class="s1">'api_dev_key'</span> <span class="o">:</span> <span class="s1">'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'</span><span class="p">,</span>
+                <span class="s1">'api_user_name'</span> <span class="o">:</span> <span class="s1">'PastebinUserName'</span><span class="p">,</span>
+                <span class="s1">'api_user_password'</span> <span class="o">:</span> <span class="s1">'PastebinPassword'</span>
+               <span class="p">});</span> 
+</pre></div>
+
+<h3>
+<a name="methods" class="anchor" href="#methods"><span class="octicon octicon-link"></span></a>Methods</h3>
+
+<p><strong>pastebin.getPaste(pasteID)</strong> : get a raw paste, providing the <code>pasteID</code></p>
+
+<div class="highlight highlight-js"><pre><span class="nx">pastebin</span>
+  <span class="p">.</span><span class="nx">getPaste</span><span class="p">(</span><span class="s1">'76b2yNRt'</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// data contains the raw paste</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Something went wrong</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">})</span>
+</pre></div>
+
+<p><strong>pastebin.createPaste(text, title, format, privacy, expiration)</strong> : creates a paste. <code>text</code> is required, other
+arguments are optional. For <code>format</code>, <code>privacy</code> and <code>expiration</code>, have a look at <strong>lib/config.js</strong> for the allowed input.
+If <code>privacy</code> is set to <strong>2</strong>, you will need to provide a username &amp;&amp; password in the constructor (Pastebin requires a api_user_key)</p>
+
+<div class="highlight highlight-js"><pre><span class="nx">pastebin</span>
+  <span class="p">.</span><span class="nx">createPaste</span><span class="p">(</span><span class="s2">"Test from pastebin-js"</span><span class="p">,</span> <span class="s2">"pastebin-js"</span><span class="p">)</span>
+  <span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// paste succesfully created, data contains the paste url</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+  <span class="p">})</span>
+  <span class="p">.</span><span class="nx">fail</span><span class="p">(</span><span class="kd">function</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Something went wrong</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">})</span>
+</pre></div>
+
+<p><strong>pastebin.createPasteFromFile(filename, title, format, privacy, expiration)</strong> : tries to read the file provided in <code>filename</code>
+(UTF-8) and paste it. Works the same as previous method.</p>
+
+<p><strong>pastebin.deletePaste(pasteID)</strong> : Tries to delete a paste, created by the user</p>
+
+<p><strong>pastebin.getUserInfo()</strong> : gets the userinfo </p>
+
+<p><strong>pastebin.listUserPastes(limit)</strong> : gets a list of pastes from the user. <code>limit</code> is optional, from 1 - 100 (default: 50)</p>
+
+<p><strong>pastebin.listTrendingPastes()</strong> : gets a list of trending pastes on Pastebin</p>
+
+<h2>
+<a name="bugs--issues" class="anchor" href="#bugs--issues"><span class="octicon octicon-link"></span></a>Bugs / issues</h2>
+
+<p>Please, if you find any bugs, or are a way better developer than I am (as in, you are thinking 'spaghetti' when looking at my
+code), feel free to create an issue or provide me with some pull requests! This is my first full module ever written for
+NodeJS.</p>
+
+<h2>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>Copyright (c) 2013-2013 J.W. Lagendijk &lt;<a href="mailto:jwlagendijk@gmail.com">jwlagendijk@gmail.com</a>&gt;</p>
+
+<p>Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:</p>
+
+<p>The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.</p>
+
+<p>THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/j3lte/pastebin-js/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/j3lte/pastebin-js/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/j3lte/pastebin-js"></a> is maintained by <a href="https://github.com/j3lte">j3lte</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
