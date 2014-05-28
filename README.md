@@ -1,6 +1,8 @@
 pastebin-js
 ===========
 
+[![NPM](https://nodei.co/npm/pastebin-js.png?downloads=true&stars=true)](https://nodei.co/npm/pastebin-js/)
+
 NodeJS module to access the Pastebin API
 
 ```js
