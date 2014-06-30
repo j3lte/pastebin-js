@@ -1,7 +1,7 @@
 var _ = require('underscore'),
     fs = require('fs'),
     xml2js = require('xml2js'),
-    Q = require('Q'),
+    Q = require('q'),
     method = require('../lib/methods'),
     conf = require('../lib/config');
 
