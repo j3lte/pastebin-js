@@ -1,3 +1,7 @@
+0.1.6 / 2014-07-03
+
+  * Change Q to lowercase, fixing error module not found
+
 0.1.5 / 2014-04-06
 ==================
 
