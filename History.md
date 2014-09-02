@@ -1,4 +1,11 @@
+0.2.0 / 2014-09-02
+==================
+
+  * Adding tests && Travis
+
+
 0.1.6 / 2014-07-03
+==================
 
   * Change Q to lowercase, fixing error module not found
 

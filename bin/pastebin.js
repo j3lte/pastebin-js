@@ -1,3 +1,12 @@
+'use strict';
+/*
+ * pastebin-js
+ * https://github.com/j3lte/pastebin-js
+ *
+ * Copyright (c) 2014 Jelte Lagendijk
+ * Licensed under the MIT license.
+ */
+
 var _ = require('underscore'),
     fs = require('fs'),
     xml2js = require('xml2js'),
@@ -54,10 +63,11 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
         p = {},
         optional = {},
         formats = null,
-        expirations = null;
+        expirations = null,
+        noKeyNeeded = true;
 
     if (typeof text !== 'string') {
-        deferred.reject(new Error("Error! Paste can only be a text!"));
+        deferred.reject(new Error('Error! Paste can only be a text!'));
     }
 
     p.api_option = 'paste';
@@ -73,7 +83,7 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
         if (formats[format]) {
             p.api_paste_format = format;
         } else {
-            deferred.reject(new Error("Error! Paste format " + format + " is unknown."));
+            deferred.reject(new Error('Error! Paste format ' + format + ' is unknown.'));
         }
     }
 
@@ -84,6 +94,7 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
             if (_this.config.api_user_key) {
                 p.api_user_key = _this.config.api_user_key;
             } else if (_this.config.api_user_name !== null && _this.config.api_user_password !== null) {
+                noKeyNeeded = false;
                 _this
                     .createAPIuserKey()
                     .then(function () {
@@ -93,10 +104,10 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
                                 .fail(deferred.reject);
                     });
             } else {
-                deferred.reject(new Error("Error! For this privacy level you need to be logged in! Provide username and password!"));
+                deferred.reject(new Error('Error! For this privacy level you need to be logged in! Provide username and password!'));
             }
         } else {
-            deferred.reject(new Error("Error! Privacy level is unknown!"));
+            deferred.reject(new Error('Error! Privacy level is unknown!'));
         }
     }
 
@@ -105,16 +116,16 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
         if (expirations[expiration]) {
             p.api_paste_expire_date = expiration;
         } else {
-            deferred.reject(new Error("Error! Paste expiration " + expiration + " is unknown."));
+            deferred.reject(new Error('Error! Paste expiration ' + expiration + ' is unknown.'));
         }
     }
 
-    _this
-        ._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, p)
-            .then(function (data) {
-                deferred.resolve(data);
-            })
-            .fail(deferred.reject);
+    if (noKeyNeeded) {
+        _this
+            ._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, p)
+                .then(deferred.resolve)
+                .fail(deferred.reject);
+    }
 
     return deferred.promise;
 
@@ -133,12 +144,12 @@ Pastebin.prototype.createPasteFromFile = function (filename, title, format, priv
         deferred = Q.defer();
 
     if (!filename) {
-        deferred.reject(new Error("Filename not provided!"));
+        deferred.reject(new Error('Filename not provided!'));
     }
 
-    fs.readFile(filename, "UTF8", function (err, data) {
+    fs.readFile(filename, 'UTF8', function (err, data) {
         if (err) {
-            deferred.reject(new Error("Readfile error: " + err));
+            deferred.reject(new Error('Readfile error: ' + err));
         }
 
         _this
@@ -161,7 +172,7 @@ Pastebin.prototype.deletePaste = function (pasteID) {
         deferred = Q.defer();
 
     if (!pasteID) {
-        deferred.reject(new Error("Please provide a paste ID to delete"));
+        deferred.reject(new Error('Please provide a paste ID to delete'));
     }
 
     p.api_option = 'delete';
@@ -174,9 +185,7 @@ Pastebin.prototype.deletePaste = function (pasteID) {
 
         _this
             ._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, p)
-                .then(function (data) {
-                    deferred.resolve(data);
-                })
+                .then(deferred.resolve)
                 .fail(deferred.reject);
 
     } else if (_this.config.api_user_name !== null && _this.config.api_user_password !== null) {
@@ -189,7 +198,7 @@ Pastebin.prototype.deletePaste = function (pasteID) {
                             .fail(deferred.reject);
                 });
     } else {
-        deferred.reject(new Error("Error! Deleting a paste created by the user needs username and password"));
+        deferred.reject(new Error('Error! Deleting a paste created by the user needs username and password'));
     }
 
     return deferred.promise;
@@ -209,7 +218,7 @@ Pastebin.prototype.createAPIuserKey = function () {
                 ._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.login, params)
                 .then(function (data) {
                     if (data.length !== 32) {
-                        deferred.reject(new Error("Error in createAPIuserKey! " + data));
+                        deferred.reject(new Error('Error in createAPIuserKey! ' + data));
                     } else {
                         _this.config.api_user_key = data;
                         deferred.resolve(true);
@@ -338,7 +347,7 @@ Pastebin.prototype._parsePastes = function (xml) {
         ._parseXML(xml)
         .then(function (data) {
             if (data) {
-                var rootObj = data["paste"],
+                var rootObj = data.paste,
                     normalize = _.map(rootObj, function (paste) {
                         var obj = {};
                         _.map(_.keys(paste), function (key) {
@@ -368,7 +377,7 @@ Pastebin.prototype._parseUser = function (xml) {
         ._parseXML(xml)
         .then(function (data) {
             if (data) {
-                var rootObj = data["user"][0],
+                var rootObj = data.user[0],
                     normalize = {};
 
                 _.each(Object.keys(rootObj), function (key) { normalize[key] = rootObj[key][0]; });
@@ -389,20 +398,20 @@ Pastebin.prototype._parseUser = function (xml) {
 Pastebin.prototype._parseXML = function (xml) {
     var _this = this,
         deferred = Q.defer(),
-        xmlString = "",
+        xmlString = '',
         parser = new xml2js.Parser({
-            "trim" : true,
-            "explicitRoot" : false
+            'trim' : true,
+            'explicitRoot' : false
         });
 
     if (!xml) {
         deferred.reject(new Error('No xml provided!'));
     }
 
-    xmlString = "<root>\n" + xml + "</root>\n";
+    xmlString = '<root>\n' + xml + '</root>\n';
     parser.parseString(xmlString, function (err, data) {
         if (err) {
-            deferred.reject(new Error("Error in parsing XML: " + err));
+            deferred.reject(new Error('Error in parsing XML: ' + err));
         } else {
             deferred.resolve(data);
         }
@@ -413,8 +422,6 @@ Pastebin.prototype._parseXML = function (xml) {
 
 /**
  * Returns a list with the required parameters from config
- *
- * TODO: Rewrite! Needs to make sure it is checking correctly
  */
 Pastebin.prototype._getRequired = function (paramlist) {
     var _this = this,
@@ -436,28 +443,14 @@ Pastebin.prototype._getRequired = function (paramlist) {
  * Higher lever method for get requests
  */
 Pastebin.prototype._getApi = function (path, params) {
-    var deferred = Q.defer();
-
-    method
-        .get(path, params)
-            .then(deferred.resolve)
-            .fail(deferred.reject);
-
-    return deferred.promise;
+    return method.get(path, params);
 };
 
 /**
  * Higher level method for post requests
  */
 Pastebin.prototype._postApi = function (path, params) {
-    var deferred = Q.defer();
-
-    method
-        .post(path, params)
-            .then(deferred.resolve)
-            .fail(deferred.reject);
-
-    return deferred.promise;
+    return method.post(path, params);
 };
 
 module.exports = Pastebin;

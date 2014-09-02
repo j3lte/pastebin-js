@@ -1,39 +1,45 @@
 {
-    "name": "pastebin-js",
-    "version": "0.1.6",
-    "description": "NodeJS module for Pastebin API",
-    "main": "index",
-    "bin": {
-        "pastebin": "./bin/pastebin.js"
-    },
-    "scripts": {
-        "test": "grunt"
-    },
-    "keywords": [
-        "pastebin"
-    ],
-    "dependencies": {
-        "underscore": "*",
-        "request": "*",
-        "xml2js": "*",
-        "q": "*"
-    },
-    "devDependencies": {
-        "grunt": "latest",
-        "grunt-contrib-jshint": "latest",
-        "grunt-contrib-watch": "latest"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/j3lte/pastebin-js"
-    },
-    "engines": {
-        "node": "*"
-    },
-    "readmeFilename": "README.md",
-    "author": {
-        "name": "J.W. Lagendijk",
-        "email": "jwlagendijk@gmail.com"
-    },
-    "license": "MIT"
+  "name": "pastebin-js",
+  "version": "0.2.0",
+  "description": "NodeJS module for Pastebin API",
+  "main": "index",
+  "bin": {
+    "pastebin": "./bin/pastebin.js"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/mocha tests/*.js"
+  },
+  "keywords": [
+    "pastebin"
+  ],
+  "dependencies": {
+    "q": "*",
+    "request": "*",
+    "underscore": "*",
+    "xml2js": "*"
+  },
+  "devDependencies": {
+    "chai": "*",
+    "grunt": "*",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-jsdoc-to-markdown": "*",
+    "grunt-simple-mocha": "*",
+    "jshint-stylish": "*",
+    "mocha": "*",
+    "nock": "*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/j3lte/pastebin-js"
+  },
+  "engines": {
+    "node": "^0.10"
+  },
+  "readmeFilename": "README.md",
+  "author": {
+    "name": "J.W. Lagendijk",
+    "email": "jwlagendijk@gmail.com"
+  },
+  "license": "MIT"
 }

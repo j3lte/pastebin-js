@@ -35,7 +35,7 @@ var PastebinAPI = require('./index'),
 pastebin
     .createPasteFromFile("./uploadthistopastebin.txt", "pastebin-js test", null, 1, "N")
     .then(function (data) {
-        // we have succesfully pasted it. Data contains the url
+        // we have succesfully pasted it. Data contains the id
         console.log(data);
     })
     .fail(function (err) {
@@ -62,7 +62,7 @@ pastebin = new PastebinAPI({
                 'api_dev_key' : 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                 'api_user_name' : 'PastebinUserName',
                 'api_user_password' : 'PastebinPassword'
-               }); 
+               });
 ```
 
 ### Methods
@@ -90,7 +90,7 @@ If ``privacy`` is set to **2**, you will need to provide a username && password 
 pastebin
   .createPaste("Test from pastebin-js", "pastebin-js")
   .then(function (data) {
-    // paste succesfully created, data contains the paste url
+    // paste succesfully created, data contains the id
     console.log(data);
   })
   .fail(function (err) {
@@ -104,7 +104,7 @@ pastebin
 
 **pastebin.deletePaste(pasteID)** : Tries to delete a paste, created by the user
 
-**pastebin.getUserInfo()** : gets the userinfo 
+**pastebin.getUserInfo()** : gets the userinfo
 
 **pastebin.listUserPastes(limit)** : gets a list of pastes from the user. ``limit`` is optional, from 1 - 100 (default: 50)
 
