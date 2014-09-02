@@ -1,6 +1,6 @@
 {
   "name": "pastebin-js",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "npm-shrinkwrap-version": "3.1.8",
   "dependencies": {
     "q": {
