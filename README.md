@@ -1,4 +1,4 @@
-pastebin-js
+pastebin-js [![Build Status](https://travis-ci.org/j3lte/pastebin-js.svg?branch=master)](https://travis-ci.org/j3lte/pastebin-js)
 ===========
 
 [![NPM](https://nodei.co/npm/pastebin-js.png?downloads=true&stars=true)](https://nodei.co/npm/pastebin-js/)
