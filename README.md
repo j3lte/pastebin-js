@@ -25,7 +25,7 @@ var PastebinAPI = require('pastebin-js'),
 ## Example
 
 ```js
-var PastebinAPI = require('./index'),
+var PastebinAPI = require('pastebin-js'),
     pastebin = new PastebinAPI({
       'api_dev_key' : 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
       'api_user_name' : 'PastebinUserName',
@@ -48,7 +48,7 @@ pastebin
 **PastebinAPI()** : Constructor.
 
 ```js
-var PastebinAPI = require('./index');
+var PastebinAPI = require('pastebin-js');
 
 // Without any parameter you can only use getPaste!
 var pastebin = new PastebinAPI();
