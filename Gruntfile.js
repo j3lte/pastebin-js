@@ -15,20 +15,25 @@ module.exports = function (grunt) {
                 force: false
             }
         },
+        shell: {
+            options: {
+                stderr: false
+            },
+            shrinkwrap : {
+                command: 'npm-shrinkwrap'
+            }
+        },
         watch : {
             jshint : {
                 files : '<%= jshint.all %>',
                 tasks: ['jshint']
+            },
+            simplemocha : {
+                files : '<%= jshint.all %>'
             }
         },
         simplemocha: {
-            options: {
-                globals: ['expect'],
-                timeout: 3000,
-                ignoreLeaks: false,
-                ui: 'bdd',
-                reporter: 'tap'
-            },
+            options: {},
             all: { src: ['tests/*.js'] }
         }
     });
@@ -36,11 +41,13 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-simple-mocha');
+    grunt.loadNpmTasks('grunt-shell');
 
     // Default task.
     grunt.registerTask('default', ['jshint']);
 
     grunt.registerTask('test', ['jshint', 'simplemocha']);
+    grunt.registerTask('build', ['test', 'shell:shrinkwrap']);
 
-    grunt.registerTask('dev', ['jshint', 'watch']);
+    grunt.registerTask('dev', ['test', 'watch']);
 };

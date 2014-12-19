@@ -1,6 +1,6 @@
 {
   "name": "pastebin-js",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "NodeJS module for Pastebin API",
   "main": "index",
   "bin": {
@@ -24,6 +24,7 @@
     "grunt-contrib-jshint": "*",
     "grunt-contrib-watch": "*",
     "grunt-jsdoc-to-markdown": "*",
+    "grunt-shell": "^1.1.1",
     "grunt-simple-mocha": "*",
     "jshint-stylish": "*",
     "mocha": "*",
@@ -41,5 +42,10 @@
     "name": "J.W. Lagendijk",
     "email": "jwlagendijk@gmail.com"
   },
-  "license": "MIT"
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://raw.githubusercontent.com/j3lte/pastebin-js/master/LICENSE"
+    }
+  ]
 }

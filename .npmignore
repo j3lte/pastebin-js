@@ -3,7 +3,7 @@ docs/
 examples/
 support/
 tests/
-test.js
+test.*
 testing.js
 .DS_Store
 coverage.html

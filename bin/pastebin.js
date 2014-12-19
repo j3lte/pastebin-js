@@ -7,12 +7,14 @@
  * Licensed under the MIT license.
  */
 
-var _ = require('underscore'),
-    fs = require('fs'),
-    xml2js = require('xml2js'),
-    Q = require('q'),
-    method = require('../lib/methods'),
-    conf = require('../lib/config');
+var _ = require('underscore');
+var fs = require('fs');
+var xml2js = require('xml2js');
+var Q = require('q');
+var method = require('../lib/methods');
+var conf = require('../lib/config');
+var debug = function (msg) { console.log(msg); };
+var noop = function () {};
 
 /**
  * Pastebin constructor
@@ -24,6 +26,9 @@ function Pastebin(config) {
     }
 
     this.config = _.extend(conf.defaults, config);
+    if (!this.config.debug) {
+        debug = noop;
+    }
 
     return this;
 }
@@ -33,20 +38,15 @@ function Pastebin(config) {
  * @param  String   id  Id of the paste
  */
 Pastebin.prototype.getPaste = function (id) {
-    var _this = this,
-        deferred = Q.defer(),
-        getUrl = conf.net.protocol + conf.net.base + conf.net.endpoint.raw + id;
+    debug('[pastebin-js::getPaste] called');
 
     if (!id) {
+        var deferred = Q.defer();
         deferred.reject(new Error('[-] getPaste : No paste id given!'));
+        return deferred.promise;
     }
 
-    method
-        .get(getUrl, null)
-            .then(deferred.resolve)
-            .fail(deferred.reject);
-
-    return deferred.promise;
+    return method.get(conf.net.protocol + conf.net.base + conf.net.endpoint.raw + id, null);
 };
 
 /**
@@ -58,32 +58,29 @@ Pastebin.prototype.getPaste = function (id) {
  * @param  String   expiration Expiration time of the paste See /lib/config.js
  */
 Pastebin.prototype.createPaste = function (text, title, format, privacy, expiration) {
-    var _this = this,
-        deferred = Q.defer(),
-        p = {},
-        optional = {},
-        formats = null,
-        expirations = null,
-        noKeyNeeded = true;
+    var deferred = Q.defer();
+    var p = {
+        api_option : 'paste',
+        api_dev_key : this.config.api_dev_key,
+        api_paste_code : text,
+    };
+    var noKeyNeeded = true;
 
     if (typeof text !== 'string') {
         deferred.reject(new Error('Error! Paste can only be a text!'));
+        return deferred.promise;
     }
-
-    p.api_option = 'paste';
-    p.api_dev_key = _this.config.api_dev_key;
-    p.api_paste_code = text;
 
     if (typeof title !== 'undefined' && title !== null) {
         p.api_paste_name = title;
     }
 
     if (typeof format !== 'undefined' && format !== null) {
-        formats = conf.formats;
-        if (formats[format]) {
+        if (conf.formats[format]) {
             p.api_paste_format = format;
         } else {
             deferred.reject(new Error('Error! Paste format ' + format + ' is unknown.'));
+            return deferred.promise;
         }
     }
 
@@ -91,44 +88,39 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
         if (privacy === 0 || privacy === 1) {
             p.api_paste_private = privacy;
         } else if (privacy === 2) {
-            if (_this.config.api_user_key) {
-                p.api_user_key = _this.config.api_user_key;
-            } else if (_this.config.api_user_name !== null && _this.config.api_user_password !== null) {
+            if (this.config.api_user_key) {
+                p.api_user_key = this.config.api_user_key;
+            } else if (this.config.api_user_name !== null && this.config.api_user_password !== null) {
                 noKeyNeeded = false;
-                _this
-                    .createAPIuserKey()
+                this.createAPIuserKey()
                     .then(function () {
-                        _this
-                            .createPaste(text, title, format, privacy, expiration)
-                                .then(deferred.resolve)
-                                .fail(deferred.reject);
-                    });
+                        this.createPaste(text, title, format, privacy, expiration)
+                            .then(deferred.resolve)
+                            .fail(deferred.reject);
+                        return deferred.promise;
+                    }.bind(this));
             } else {
                 deferred.reject(new Error('Error! For this privacy level you need to be logged in! Provide username and password!'));
+                return deferred.promise;
             }
         } else {
             deferred.reject(new Error('Error! Privacy level is unknown!'));
+            return deferred.promise;
         }
     }
 
     if (typeof expiration !== 'undefined' && expiration !== null) {
-        expirations = conf.expiration;
-        if (expirations[expiration]) {
-            p.api_paste_expire_date = expiration;
-        } else {
+        if (!conf.expiration[expiration]) {
             deferred.reject(new Error('Error! Paste expiration ' + expiration + ' is unknown.'));
+            return deferred.promise;
         }
+        p.api_paste_expire_date = expiration;
     }
 
     if (noKeyNeeded) {
-        _this
-            ._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, p)
-                .then(deferred.resolve)
-                .fail(deferred.reject);
+        return this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, p);
     }
-
     return deferred.promise;
-
 };
 
 /**
@@ -140,8 +132,7 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
  * @param  String   expiration Expiration time of the paste See /lib/config.js
  */
 Pastebin.prototype.createPasteFromFile = function (filename, title, format, privacy, expiration) {
-    var _this = this,
-        deferred = Q.defer();
+    var deferred = Q.defer();
 
     if (!filename) {
         deferred.reject(new Error('Filename not provided!'));
@@ -152,10 +143,9 @@ Pastebin.prototype.createPasteFromFile = function (filename, title, format, priv
             deferred.reject(new Error('Readfile error: ' + err));
         }
 
-        _this
-            .createPaste(data, title, format, privacy, expiration)
-                .then(deferred.resolve)
-                .fail(deferred.reject);
+        this.createPaste(data, title, format, privacy, expiration)
+            .then(deferred.resolve)
+            .fail(deferred.reject);
 
     });
 
@@ -167,36 +157,32 @@ Pastebin.prototype.createPasteFromFile = function (filename, title, format, priv
  * @param  String   pasteID     The id of the userpaste (http://pastebin.com/[id])
  */
 Pastebin.prototype.deletePaste = function (pasteID) {
-    var _this = this,
-        p = {},
-        deferred = Q.defer();
+    var deferred = Q.defer();
 
     if (!pasteID) {
         deferred.reject(new Error('Please provide a paste ID to delete'));
+        return deferred.promise;
     }
 
-    p.api_option = 'delete';
-    p.api_dev_key = _this.config.api_dev_key;
-    p.api_paste_key = pasteID;
+    var params = {
+        api_option : 'delete',
+        api_dev_key : this.config.api_dev_key,
+        api_paste_key : pasteID
+    };
 
-    if (_this.config.api_user_key) {
 
-        p.api_user_key = _this.config.api_user_key;
-
-        _this
-            ._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, p)
-                .then(deferred.resolve)
-                .fail(deferred.reject);
-
-    } else if (_this.config.api_user_name !== null && _this.config.api_user_password !== null) {
-        _this
-            .createAPIuserKey()
-                .then(function () {
-                    _this
-                        .deletePaste(pasteID)
-                            .then(deferred.resolve)
-                            .fail(deferred.reject);
-                });
+    if (this.config.api_user_key) {
+        params.api_user_key = this.config.api_user_key;
+        this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, params)
+            .then(deferred.resolve)
+            .fail(deferred.reject);
+    } else if (this.config.api_user_name !== null && this.config.api_user_password !== null) {
+        this.createAPIuserKey()
+            .then(function () {
+                this.deletePaste(pasteID)
+                    .then(deferred.resolve)
+                    .fail(deferred.reject);
+            }.bind(this));
     } else {
         deferred.reject(new Error('Error! Deleting a paste created by the user needs username and password'));
     }
@@ -208,24 +194,22 @@ Pastebin.prototype.deletePaste = function (pasteID) {
  * Create userkey. Saved in config.api_user_key
  */
 Pastebin.prototype.createAPIuserKey = function () {
-    var _this = this,
-        deferred = Q.defer();
+    debug('[pastebin-js::createAPIuserKey] called');
+    var deferred = Q.defer();
 
-    _this
-        ._getRequired(['api_dev_key', 'api_user_name', 'api_user_password'])
+    this._getRequired(['api_dev_key', 'api_user_name', 'api_user_password'])
         .then(function (params) {
-            _this
-                ._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.login, params)
+            this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.login, params)
                 .then(function (data) {
                     if (data.length !== 32) {
                         deferred.reject(new Error('Error in createAPIuserKey! ' + data));
                     } else {
-                        _this.config.api_user_key = data;
+                        this.config.api_user_key = data;
                         deferred.resolve(true);
                     }
-                })
+                }.bind(this))
                 .fail(deferred.reject);
-        })
+        }.bind(this))
         .fail(deferred.reject);
 
     return deferred.promise;
@@ -236,38 +220,30 @@ Pastebin.prototype.createAPIuserKey = function () {
  * @param  Number   limit   Set the limit of pastes
  */
 Pastebin.prototype.listUserPastes = function (limit) {
-    var _this = this,
-        deferred = Q.defer(),
-        params = {},
-        l = limit || 50;
+    var deferred = Q.defer();
+    var l = limit || 50;
 
-    if (!_this.config.api_user_key) {
-
-        _this
-            .createAPIuserKey()
-                .then(function () {
-                    _this
-                        .listUserPastes(limit)
-                        .then(deferred.resolve)
-                        .fail(deferred.reject);
-                })
-                .fail(deferred.reject);
-
+    if (!this.config.api_user_key) {
+        this.createAPIuserKey()
+            .then(function () {
+                this.listUserPastes(limit)
+                    .then(deferred.resolve)
+                    .fail(deferred.reject);
+            }.bind(this))
+            .fail(deferred.reject);
     } else {
-
-        params.api_dev_key = _this.config.api_dev_key;
-        params.api_user_key = _this.config.api_user_key;
-        params.api_results_limit = l;
-        params.api_option = 'list';
-
-        _this
-            ._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, params)
+        var params = {
+            api_dev_key : this.config.api_dev_key,
+            api_user_key : this.config.api_user_key,
+            api_results_limit : l,
+            api_option : 'list'
+        };
+        this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, params)
             .then(function (data) {
-                _this
-                    ._parsePastes(data)
-                        .then(deferred.resolve)
-                        .fail(deferred.reject);
-            })
+                this._parsePastes(data)
+                    .then(deferred.resolve)
+                    .fail(deferred.reject);
+            }.bind(this))
             .fail(deferred.reject);
     }
 
@@ -278,22 +254,21 @@ Pastebin.prototype.listUserPastes = function (limit) {
  * Lists the trending pastes
  */
 Pastebin.prototype.listTrendingPastes = function () {
-    var _this = this,
-        deferred = Q.defer(),
-        params = {};
+    debug('[pastebin-js::listTrendingPastes] called');
 
-    params.api_option = 'trends';
-    params.api_dev_key = _this.config.api_dev_key;
+    var deferred = Q.defer();
+    var params = {
+        api_option : 'trends',
+        api_dev_key : this.config.api_dev_key
+    };
 
-    _this
-        ._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, params)
-            .then(function (data) {
-                _this
-                    ._parsePastes(data)
-                        .then(deferred.resolve)
-                        .fail(deferred.reject);
-            })
-            .fail(deferred.reject);
+    this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, params)
+        .then(function (data) {
+            this._parsePastes(data)
+                .then(deferred.resolve)
+                .fail(deferred.reject);
+        }.bind(this))
+        .fail(deferred.reject);
 
     return deferred.promise;
 };
@@ -302,34 +277,30 @@ Pastebin.prototype.listTrendingPastes = function () {
  * Gets the info of the user
  */
 Pastebin.prototype.getUserInfo = function () {
-    var _this = this,
-        deferred = Q.defer(),
-        params = {};
+    debug('[pastebin-js::getUserInfo] called');
 
-    params.api_option = 'userdetails';
-    params.api_dev_key = _this.config.api_dev_key;
+    var deferred = Q.defer();
+    var params = {
+        api_option : 'userdetails',
+        api_dev_key : this.config.api_dev_key
+    };
 
-    if (!_this.config.api_user_key) {
-        _this
-            .createAPIuserKey()
-                .then(function () {
-                    _this
-                        .getUserInfo()
-                        .then(deferred.resolve)
-                        .fail(deferred.reject);
-                })
-                .fail(deferred.reject);
-    } else {
-        params.api_user_key = _this.config.api_user_key;
-
-        _this
-            ._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, params)
-            .then(function (data) {
-                _this
-                    ._parseUser(data)
+    if (!this.config.api_user_key) {
+        this.createAPIuserKey()
+            .then(function () {
+                this.getUserInfo()
                     .then(deferred.resolve)
                     .fail(deferred.reject);
-            })
+            }.bind(this))
+            .fail(deferred.reject);
+    } else {
+        params.api_user_key = this.config.api_user_key;
+        this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, params)
+            .then(function (data) {
+                this._parseUser(data)
+                    .then(deferred.resolve)
+                    .fail(deferred.reject);
+            }.bind(this))
             .fail(deferred.reject);
     }
 
@@ -340,22 +311,19 @@ Pastebin.prototype.getUserInfo = function () {
  * Parse an XML file containing pastes
  */
 Pastebin.prototype._parsePastes = function (xml) {
-    var _this = this,
-        deferred = Q.defer();
+    var deferred = Q.defer();
 
-    _this
-        ._parseXML(xml)
+    this._parseXML(xml)
         .then(function (data) {
             if (data) {
-                var rootObj = data.paste,
-                    normalize = _.map(rootObj, function (paste) {
+                var rootObj = data.paste;
+                var normalize = _.map(rootObj, function (paste) {
                         var obj = {};
                         _.map(_.keys(paste), function (key) {
                             obj[key] = paste[key][0];
                         });
                         return obj;
                     });
-
                 deferred.resolve(normalize);
             } else {
                 deferred.reject(new Error('No data returned to _parsePastes!'));
@@ -370,18 +338,14 @@ Pastebin.prototype._parsePastes = function (xml) {
  * Parse an XML file containing userdata
  */
 Pastebin.prototype._parseUser = function (xml) {
-    var _this = this,
-        deferred = Q.defer();
+    var deferred = Q.defer();
 
-    _this
-        ._parseXML(xml)
+    this._parseXML(xml)
         .then(function (data) {
             if (data) {
-                var rootObj = data.user[0],
-                    normalize = {};
-
+                var rootObj = data.user[0];
+                var normalize = {};
                 _.each(Object.keys(rootObj), function (key) { normalize[key] = rootObj[key][0]; });
-
                 deferred.resolve(normalize);
             } else {
                 deferred.reject(new Error('No data returned to _parseUser!'));
@@ -396,16 +360,18 @@ Pastebin.prototype._parseUser = function (xml) {
  * Parse an XML file
  */
 Pastebin.prototype._parseXML = function (xml) {
-    var _this = this,
-        deferred = Q.defer(),
-        xmlString = '',
-        parser = new xml2js.Parser({
-            'trim' : true,
-            'explicitRoot' : false
-        });
+    debug('[pastebin-js::_parseXML] called');
+
+    var deferred = Q.defer();
+    var xmlString = '';
+    var parser = new xml2js.Parser({
+        'trim' : true,
+        'explicitRoot' : false
+    });
 
     if (!xml) {
         deferred.reject(new Error('No xml provided!'));
+        return deferred.promise;
     }
 
     xmlString = '<root>\n' + xml + '</root>\n';
@@ -424,15 +390,19 @@ Pastebin.prototype._parseXML = function (xml) {
  * Returns a list with the required parameters from config
  */
 Pastebin.prototype._getRequired = function (paramlist) {
-    var _this = this,
-        deferred = Q.defer(),
-        ret = {};
+    debug('[pastebin-js::_getRequired] called with ' + paramlist);
 
-    ret = _.pick(_this.config, paramlist);
+    var deferred = Q.defer();
+    var ret = _.filter(paramlist, function(param) {
+        return this.config[param] !== null;
+    }.bind(this));
 
     if (Object.keys(ret).length !== paramlist.length) {
-        deferred.reject(new Error('Missing parameters! ' + _.difference(paramlist, Object.keys(ret))));
+        debug('[pastebin-js::_getRequired] reject');
+        deferred.reject(new Error('Missing parameters! ' + _.difference(paramlist, ret)));
     } else {
+        debug('[pastebin-js::_getRequired] resolved');
+        ret = _.pick(this.config, paramlist);
         deferred.resolve(ret);
     }
 
