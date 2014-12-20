@@ -1,7 +1,8 @@
-[0.3.0](https://github.com/j3lte/pastebin-js/releases/tag/v0.3.0) / 2014-12-19
+[0.3.0](https://github.com/j3lte/pastebin-js/releases/tag/v0.3.1) / 2014-12-20
 ==================
 
   * Refactoring all the _this && this
+  * Removing all the console log stuff from debugging my code... whoops
 
 0.2.0-[0.2.1](https://github.com/j3lte/pastebin-js/releases/tag/v0.2.1) / 2014-09-02
 ==================

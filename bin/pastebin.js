@@ -13,23 +13,15 @@ var xml2js = require('xml2js');
 var Q = require('q');
 var method = require('../lib/methods');
 var conf = require('../lib/config');
-var debug = function (msg) { console.log(msg); };
-var noop = function () {};
 
 /**
  * Pastebin constructor
  */
 function Pastebin(config) {
-    // Pastebin('userkey')
     if (typeof config === 'string') {
         config = { api_dev_key : config };
     }
-
     this.config = _.extend(conf.defaults, config);
-    if (!this.config.debug) {
-        debug = noop;
-    }
-
     return this;
 }
 
@@ -38,14 +30,11 @@ function Pastebin(config) {
  * @param  String   id  Id of the paste
  */
 Pastebin.prototype.getPaste = function (id) {
-    debug('[pastebin-js::getPaste] called');
-
     if (!id) {
         var deferred = Q.defer();
         deferred.reject(new Error('[-] getPaste : No paste id given!'));
         return deferred.promise;
     }
-
     return method.get(conf.net.protocol + conf.net.base + conf.net.endpoint.raw + id, null);
 };
 
@@ -194,7 +183,6 @@ Pastebin.prototype.deletePaste = function (pasteID) {
  * Create userkey. Saved in config.api_user_key
  */
 Pastebin.prototype.createAPIuserKey = function () {
-    debug('[pastebin-js::createAPIuserKey] called');
     var deferred = Q.defer();
 
     this._getRequired(['api_dev_key', 'api_user_name', 'api_user_password'])
@@ -254,8 +242,6 @@ Pastebin.prototype.listUserPastes = function (limit) {
  * Lists the trending pastes
  */
 Pastebin.prototype.listTrendingPastes = function () {
-    debug('[pastebin-js::listTrendingPastes] called');
-
     var deferred = Q.defer();
     var params = {
         api_option : 'trends',
@@ -277,8 +263,6 @@ Pastebin.prototype.listTrendingPastes = function () {
  * Gets the info of the user
  */
 Pastebin.prototype.getUserInfo = function () {
-    debug('[pastebin-js::getUserInfo] called');
-
     var deferred = Q.defer();
     var params = {
         api_option : 'userdetails',
@@ -360,8 +344,6 @@ Pastebin.prototype._parseUser = function (xml) {
  * Parse an XML file
  */
 Pastebin.prototype._parseXML = function (xml) {
-    debug('[pastebin-js::_parseXML] called');
-
     var deferred = Q.defer();
     var xmlString = '';
     var parser = new xml2js.Parser({
@@ -390,18 +372,14 @@ Pastebin.prototype._parseXML = function (xml) {
  * Returns a list with the required parameters from config
  */
 Pastebin.prototype._getRequired = function (paramlist) {
-    debug('[pastebin-js::_getRequired] called with ' + paramlist);
-
     var deferred = Q.defer();
     var ret = _.filter(paramlist, function(param) {
         return this.config[param] !== null;
     }.bind(this));
 
     if (Object.keys(ret).length !== paramlist.length) {
-        debug('[pastebin-js::_getRequired] reject');
         deferred.reject(new Error('Missing parameters! ' + _.difference(paramlist, ret)));
     } else {
-        debug('[pastebin-js::_getRequired] resolved');
         ret = _.pick(this.config, paramlist);
         deferred.resolve(ret);
     }
