@@ -1,4 +1,4 @@
-[0.3.0](https://github.com/j3lte/pastebin-js/releases/tag/v0.3.1) / 2014-12-20
+[0.3.1](https://github.com/j3lte/pastebin-js/releases/tag/v0.3.1) / 2014-12-20
 ==================
 
   * Refactoring all the _this && this
