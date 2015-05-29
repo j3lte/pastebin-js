@@ -22,12 +22,12 @@ function Pastebin(config) {
         config = { api_dev_key : config };
     }
     this.config = _.extend(conf.defaults, config);
-    return this;
 }
 
 /**
  * Get a paste
- * @param  String   id  Id of the paste
+ * @param  {String}   id    Id of the paste
+ * @return {Object}         Promise
  */
 Pastebin.prototype.getPaste = function (id) {
     if (!id) {
@@ -40,11 +40,12 @@ Pastebin.prototype.getPaste = function (id) {
 
 /**
  * Create a paste
- * @param  String   text       Text to be pasted
- * @param  String   title      Title of the paste (optional)
- * @param  String   format     Format of the paste, for syntax highlighting. See /lib/config.js (optional)
- * @param  Number   privacy    Privacylevel of the paste (0 = public, 1 = unlisted and 2 = private) (optional, default = 0)
- * @param  String   expiration Expiration time of the paste See /lib/config.js
+ * @param  {String}   text       Text to be pasted
+ * @param  {String}   title      Title of the paste (optional)
+ * @param  {String}   format     Format of the paste, for syntax highlighting. See /lib/config.js (optional)
+ * @param  {Number}   privacy    Privacylevel of the paste (0 = public, 1 = unlisted and 2 = private) (optional, default = 0)
+ * @param  {String}   expiration Expiration time of the paste See /lib/config.js
+ * @return {Object}   Promise
  */
 Pastebin.prototype.createPaste = function (text, title, format, privacy, expiration) {
     var deferred = Q.defer();
@@ -114,11 +115,12 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
 
 /**
  * Create a paste from a file
- * @param  String   filename   Location of the filename
- * @param  String   title      Title of the paste (optional)
- * @param  String   format     Format of the paste, for syntax highlighting. See /lib/config.js (optional)
- * @param  Number   privacy    Privacylevel of the paste (0 = public, 1 = unlisted and 2 = private) (optional, default = 0)
- * @param  String   expiration Expiration time of the paste See /lib/config.js
+ * @param  {String}   filename   Location of the filename
+ * @param  {String}   title      Title of the paste (optional)
+ * @param  {String}   format     Format of the paste, for syntax highlighting. See /lib/config.js (optional)
+ * @param  {Number}   privacy    Privacylevel of the paste (0 = public, 1 = unlisted and 2 = private) (optional, default = 0)
+ * @param  {String}   expiration Expiration time of the paste See /lib/config.js
+ * @return {Object}   Promise
  */
 Pastebin.prototype.createPasteFromFile = function (filename, title, format, privacy, expiration) {
     var deferred = Q.defer();
@@ -143,7 +145,8 @@ Pastebin.prototype.createPasteFromFile = function (filename, title, format, priv
 
 /**
  * Delete a paste that is created by the user
- * @param  String   pasteID     The id of the userpaste (http://pastebin.com/[id])
+ * @param  {String}   pasteID     The id of the userpaste (http://pastebin.com/[id])
+ * @return {Object}   Promise
  */
 Pastebin.prototype.deletePaste = function (pasteID) {
     var deferred = Q.defer();
@@ -181,6 +184,7 @@ Pastebin.prototype.deletePaste = function (pasteID) {
 
 /**
  * Create userkey. Saved in config.api_user_key
+ * @return {Object}   Promise
  */
 Pastebin.prototype.createAPIuserKey = function () {
     var deferred = Q.defer();
@@ -205,7 +209,8 @@ Pastebin.prototype.createAPIuserKey = function () {
 
 /**
  * List the pastes that are created by the user
- * @param  Number   limit   Set the limit of pastes
+ * @param  {Number}   limit   Set the limit of pastes
+ * @return {Object}   Promise
  */
 Pastebin.prototype.listUserPastes = function (limit) {
     var deferred = Q.defer();
@@ -240,6 +245,7 @@ Pastebin.prototype.listUserPastes = function (limit) {
 
 /**
  * Lists the trending pastes
+ * @return {Object}   Promise
  */
 Pastebin.prototype.listTrendingPastes = function () {
     var deferred = Q.defer();
@@ -261,6 +267,7 @@ Pastebin.prototype.listTrendingPastes = function () {
 
 /**
  * Gets the info of the user
+ * @return {Object}   Promise
  */
 Pastebin.prototype.getUserInfo = function () {
     var deferred = Q.defer();
@@ -293,6 +300,8 @@ Pastebin.prototype.getUserInfo = function () {
 
 /**
  * Parse an XML file containing pastes
+ * @param   {String}    xml     XML
+ * @return  {Object}   Promise
  */
 Pastebin.prototype._parsePastes = function (xml) {
     var deferred = Q.defer();
@@ -320,6 +329,8 @@ Pastebin.prototype._parsePastes = function (xml) {
 
 /**
  * Parse an XML file containing userdata
+ * @param   {String}    xml     XML
+ * @return  {Object}   Promise
  */
 Pastebin.prototype._parseUser = function (xml) {
     var deferred = Q.defer();
@@ -342,6 +353,8 @@ Pastebin.prototype._parseUser = function (xml) {
 
 /**
  * Parse an XML file
+ * @param   {String}    xml     XML
+ * @return  {Object}   Promise
  */
 Pastebin.prototype._parseXML = function (xml) {
     var deferred = Q.defer();
@@ -370,6 +383,7 @@ Pastebin.prototype._parseXML = function (xml) {
 
 /**
  * Returns a list with the required parameters from config
+ * @param   {Array}    paramlist     List of parameters
  */
 Pastebin.prototype._getRequired = function (paramlist) {
     var deferred = Q.defer();
@@ -389,6 +403,8 @@ Pastebin.prototype._getRequired = function (paramlist) {
 
 /**
  * Higher lever method for get requests
+ * @param {String}    path      Path
+ * @param {Object}    params    Parameters
  */
 Pastebin.prototype._getApi = function (path, params) {
     return method.get(path, params);
@@ -396,6 +412,8 @@ Pastebin.prototype._getApi = function (path, params) {
 
 /**
  * Higher level method for post requests
+ * @param {String}    path      Path
+ * @param {Object}    params    Parameters
  */
 Pastebin.prototype._postApi = function (path, params) {
     return method.post(path, params);

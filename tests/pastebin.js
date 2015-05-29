@@ -1,3 +1,4 @@
+/* global it, describe */
 'use strict';
 /*
  * pastebin-js
