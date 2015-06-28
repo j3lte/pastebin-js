@@ -1,7 +1,7 @@
 pastebin-js
 ===========
 
-[![NPM](https://nodei.co/npm/pastebin-js.png?downloads=true&stars=true)](https://nodei.co/npm/pastebin-js/)
+[![NPM](https://nodei.co/npm/pastebin-js.svg?downloads=true&stars=true)](https://nodei.co/npm/pastebin-js/)
 
 [![Build Status](https://travis-ci.org/j3lte/pastebin-js.svg?branch=master)](https://travis-ci.org/j3lte/pastebin-js)
 [![DAVID](https://david-dm.org/j3lte/pastebin-js.svg)](https://david-dm.org/j3lte/pastebin-js)
