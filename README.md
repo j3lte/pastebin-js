@@ -4,7 +4,7 @@ pastebin-js
 [![NPM](https://nodei.co/npm/pastebin-js.png?downloads=true&stars=true)](https://nodei.co/npm/pastebin-js/)
 
 [![Build Status](https://travis-ci.org/j3lte/pastebin-js.svg?branch=master)](https://travis-ci.org/j3lte/pastebin-js)
-[![DAVID](https://david-dm.org/j3lte/pastebin-js.png)](https://david-dm.org/j3lte/pastebin-js)
+[![DAVID](https://david-dm.org/j3lte/pastebin-js.svg)](https://david-dm.org/j3lte/pastebin-js)
 [![npm version](https://badge.fury.io/js/pastebin-js.svg)](http://badge.fury.io/js/pastebin-js)
 [![Development Dependency Status](https://david-dm.org/j3lte/pastebin-js/dev-status.svg?theme=shields.io)](https://david-dm.org/j3lte/pastebin-js#info=devDependencies)
 [![Code Climate](https://codeclimate.com/github/j3lte/pastebin-js/badges/gpa.svg)](https://codeclimate.com/github/j3lte/pastebin-js)
