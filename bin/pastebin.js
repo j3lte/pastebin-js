@@ -124,6 +124,7 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
  */
 Pastebin.prototype.createPasteFromFile = function (filename, title, format, privacy, expiration) {
     var deferred = Q.defer();
+    var self = this;
 
     if (!filename) {
         deferred.reject(new Error('Filename not provided!'));
@@ -134,7 +135,7 @@ Pastebin.prototype.createPasteFromFile = function (filename, title, format, priv
             deferred.reject(new Error('Readfile error: ' + err));
         }
 
-        this.createPaste(data, title, format, privacy, expiration)
+        self.createPaste(data, title, format, privacy, expiration)
             .then(deferred.resolve)
             .fail(deferred.reject);
 
