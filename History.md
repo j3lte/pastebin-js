@@ -1,3 +1,8 @@
+[0.3.4](https://github.com/j3lte/pastebin-js/releases/tag/v0.3.4) / 2015-11-23
+==================
+
+  * Change the error on GET and POST methods
+
 [0.3.1](https://github.com/j3lte/pastebin-js/releases/tag/v0.3.1) / 2014-12-20
 ==================
 
