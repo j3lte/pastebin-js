@@ -115,6 +115,29 @@ pastebin
 
 **pastebin.createPasteFromFile(filename, title, format, privacy, expiration)** : tries to read the file provided in ``filename`` (UTF-8) and paste it. Works the same as previous method.
 
+You can also use an object as the first parameter:
+
+```js
+pastebin
+    .createPaste({
+        text: "This is a private paste",
+        title: "Private",
+        format: null,
+        privacy: 2, 
+        expiration: '10M'
+    })
+    
+pastebin
+    .createPasteFromFile({
+        text: "./filename.txt",
+        title: "Public text file listed under my username",
+        format: null,
+        privacy: 3, 
+        expiration: '10M'
+    })
+    
+```
+
 ### Privacy
 
 The ``.createPaste`` and ``.createPasteFromFile`` use privacy levels that are listed on the [Pastebin API](http://pastebin.com/api#7), with one extra added. The following levels are available:
@@ -139,7 +162,9 @@ pastebin-js now has synchronous support as well. The following methods are avail
 ```
     .getPasteSync(id, callback)
     .createPasteSync(text, title, format, privacy, expiration, callback)
+    .createPasteSync(object, callback)
     .createPasteFromFileSync(filename, title, format, privacy, expiration, callback)
+    .createPasteFromFileSync(object, callback)
     .deletePasteSync(pasteID, callback)
     .listUserPastesSync(limit, callback)
     .listTrendingPastesSync(callback)
