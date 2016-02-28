@@ -132,6 +132,21 @@ Keep this in mind when you want to create a paste. Level 2 and 3 are posted unde
 
 **pastebin.deletePaste(pasteID)** : Tries to delete a paste, created by the user
 
+## Synchronous support
+
+pastebin-js now has synchronous support as well. The following methods are available:
+
+```
+    .getPasteSync(id, callback)
+    .createPasteSync(text, title, format, privacy, expiration, callback)
+    .createPasteFromFileSync(filename, title, format, privacy, expiration, callback)
+    .deletePasteSync(pasteID, callback)
+    .listUserPastesSync(limit, callback)
+    .listTrendingPastesSync(callback)
+    .getUserInfoSync(callback)
+```
+
+The callback will be called with two parameters: ```callback(err, data)```
 
 ## Bugs / issues
 
