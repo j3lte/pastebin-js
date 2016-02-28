@@ -77,7 +77,7 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
     if (typeof privacy !== 'undefined' && privacy !== null) {
         if (privacy === 0 || privacy === 1) {
             p.api_paste_private = privacy;
-        } else if (privacy === 2) {
+        } else if (privacy === 2 || privacy === 3) {
             if (this.config.api_user_key) {
                 p.api_user_key = this.config.api_user_key;
             } else if (this.config.api_user_name !== null && this.config.api_user_password !== null) {
@@ -108,7 +108,11 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
     }
 
     if (noKeyNeeded) {
-        return this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, p);
+      // Paste privacy 3 = Public, under user
+      if (p.api_paste_private === 3) {
+        p.api_paste_private = 0;
+      }
+      return this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, p);
     }
     return deferred.promise;
 };

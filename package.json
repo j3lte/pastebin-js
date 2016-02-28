@@ -1,6 +1,6 @@
 {
   "name": "pastebin-js",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "NodeJS module for Pastebin API",
   "main": "index",
   "bin": {
@@ -35,7 +35,7 @@
     "url": "git://github.com/j3lte/pastebin-js"
   },
   "engines": {
-    "node": "^0.10"
+    "node": ">0.12"
   },
   "readmeFilename": "README.md",
   "author": {
