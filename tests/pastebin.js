@@ -80,4 +80,32 @@ describe('Pastebin ::', function () {
         expect(typeof pastebin._postApi).to.equal('function');
     });
 
+    it('has method :: getPasteSync', function () {
+        expect(typeof pastebin.getPasteSync).to.equal('function');
+    });
+
+    it('has method :: createPasteSync', function () {
+        expect(typeof pastebin.createPasteSync).to.equal('function');
+    });
+
+    it('has method :: createPasteFromFileSync', function () {
+        expect(typeof pastebin.createPasteFromFileSync).to.equal('function');
+    });
+
+    it('has method :: deletePasteSync', function () {
+        expect(typeof pastebin.deletePasteSync).to.equal('function');
+    });
+
+    it('has method :: listUserPastesSync', function () {
+        expect(typeof pastebin.listUserPastesSync).to.equal('function');
+    });
+
+    it('has method :: listTrendingPastesSync', function () {
+        expect(typeof pastebin.listTrendingPastesSync).to.equal('function');
+    });
+
+    it('has method :: getUserInfoSync', function () {
+        expect(typeof pastebin.getUserInfoSync).to.equal('function');
+    });
+
 });

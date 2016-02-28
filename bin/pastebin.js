@@ -48,7 +48,7 @@ Pastebin.prototype.getPaste = function (id) {
  * @return {Object}   Promise
  */
 Pastebin.prototype.createPaste = function (text, title, format, privacy, expiration) {
-    if (_.isObject(text) && typeof title === "undefined") {
+    if (_.isObject(text) && typeof title === 'undefined') {
       // assume the first parameter is an object with the information
       expiration = text.expiration;
       privacy = text.privacy;
@@ -137,7 +137,7 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
  * @return {Object}   Promise
  */
 Pastebin.prototype.createPasteFromFile = function (filename, title, format, privacy, expiration) {
-    if (_.isObject(filename) && typeof title === "undefined") {
+    if (_.isObject(filename) && typeof title === 'undefined') {
       // assume the first parameter is an object with the information
       expiration = filename.expiration;
       privacy = filename.privacy;
@@ -470,7 +470,7 @@ Pastebin.prototype.createPasteSync = function (text, title, format, privacy, exp
 };
 
 Pastebin.prototype.createPasteFromFileSync = function (filename, title, format, privacy, expiration, callback) {
-  if (_.isObject(text) && _.isFunction(title)) {
+  if (_.isObject(filename) && _.isFunction(title)) {
     callback = title;
     runWithCallback(this.createPasteFromFile(filename), callback);
   } else {
