@@ -4,7 +4,7 @@
  * pastebin-js
  * https://github.com/j3lte/pastebin-js
  *
- * Copyright (c) 2014 Jelte Lagendijk
+ * Copyright (c) 2013-2016 Jelte Lagendijk
  * Licensed under the MIT license.
  */
 var expect = require('chai').expect,

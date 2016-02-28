@@ -3,7 +3,7 @@
  * pastebin-js
  * https://github.com/j3lte/pastebin-js
  *
- * Copyright (c) 2014 Jelte Lagendijk
+ * Copyright (c) 2013-2016 Jelte Lagendijk
  * Licensed under the MIT license.
  */
 
@@ -98,7 +98,8 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
                             .then(deferred.resolve)
                             .fail(deferred.reject);
                         return deferred.promise;
-                    }.bind(this));
+                    }.bind(this))
+                    .fail(deferred.reject);
             } else {
                 deferred.reject(new Error('Error! For this privacy level you need to be logged in! Provide username and password!'));
                 return deferred.promise;
