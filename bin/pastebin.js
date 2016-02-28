@@ -424,4 +424,45 @@ Pastebin.prototype._postApi = function (path, params) {
     return method.post(path, params);
 };
 
+/***************************************************
+ * Synchronous methods
+ ***************************************************/
+
+function runWithCallback(promiseFunc, callback) {
+  if (!_.isFunction(callback)) { throw new Error('This function requires a callback!'); }
+  promiseFunc.then(function (data) {
+      callback(null, data);
+  }).fail(function (err) {
+      callback(err, null);
+  });
+}
+
+Pastebin.prototype.getPasteSync = function (id, callback) {
+   runWithCallback(this.getPaste(id), callback);
+};
+
+Pastebin.prototype.createPasteSync = function (text, title, format, privacy, expiration, callback) {
+  runWithCallback(this.createPaste(text, title, format, privacy, expiration), callback);
+};
+
+Pastebin.prototype.createPasteFromFileSync = function (filename, title, format, privacy, expiration, callback) {
+  runWithCallback(this.createPasteFromFile(filename, title, format, privacy, expiration), callback);
+};
+
+Pastebin.prototype.deletePasteSync = function (pasteID, callback) {
+  runWithCallback(this.deletePaste(pasteID), callback);
+};
+
+Pastebin.prototype.listUserPastesSync = function (limit, callback) {
+  runWithCallback(this.listUserPastes(limit), callback);
+};
+
+Pastebin.prototype.listTrendingPastesSync = function (callback) {
+  runWithCallback(this.listTrendingPastes(), callback);
+};
+
+Pastebin.prototype.getUserInfoSync = function (callback) {
+  runWithCallback(this.getUserInfo(), callback);
+};
+
 module.exports = Pastebin;
