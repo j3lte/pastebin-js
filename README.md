@@ -71,7 +71,7 @@ pastebin = new PastebinAPI({
                });
 ```
 
-### Methods
+## GET
 
 **pastebin.getPaste(pasteID)** : get a raw paste, providing the ``pasteID``
 
@@ -88,9 +88,17 @@ pastebin
   })
 ```
 
+**pastebin.getUserInfo()** : gets the userinfo
+
+**pastebin.listUserPastes(limit)** : gets a list of pastes from the user. ``limit`` is optional, from 1 - 100 (default: 50)
+
+**pastebin.listTrendingPastes()** : gets a list of trending pastes on Pastebin
+
+## POST
+
 **pastebin.createPaste(text, title, format, privacy, expiration)** : creates a paste. ``text`` is required, other
 arguments are optional. For ``format``, ``privacy`` and ``expiration``, have a look at **lib/config.js** for the allowed input.
-If ``privacy`` is set to **2**, you will need to provide a username && password in the constructor (Pastebin requires a api_user_key)
+If ``privacy`` is set to **2** or **3**, you will need to provide a username && password in the constructor (Pastebin requires a api_user_key)
 
 ```js
 pastebin
@@ -105,16 +113,24 @@ pastebin
   })
 ```
 
-**pastebin.createPasteFromFile(filename, title, format, privacy, expiration)** : tries to read the file provided in ``filename``
-(UTF-8) and paste it. Works the same as previous method.
+**pastebin.createPasteFromFile(filename, title, format, privacy, expiration)** : tries to read the file provided in ``filename`` (UTF-8) and paste it. Works the same as previous method.
+
+### Privacy
+
+The ``.createPaste`` and ``.createPasteFromFile`` use privacy levels that are listed on the [Pastebin API](http://pastebin.com/api#7), with one extra added. The following levels are available:
+
+```
+    0 = Public, anonymous
+    1 = Unlisted, anonymous
+    2 = Private, user
+    3 = Public, user
+```
+
+Keep this in mind when you want to create a paste. Level 2 and 3 are posted under your username on Pastebin (and will need a Username and Password in the constructor, see above)
+
+## DELETE
 
 **pastebin.deletePaste(pasteID)** : Tries to delete a paste, created by the user
-
-**pastebin.getUserInfo()** : gets the userinfo
-
-**pastebin.listUserPastes(limit)** : gets a list of pastes from the user. ``limit`` is optional, from 1 - 100 (default: 50)
-
-**pastebin.listTrendingPastes()** : gets a list of trending pastes on Pastebin
 
 
 ## Bugs / issues
