@@ -48,6 +48,15 @@ Pastebin.prototype.getPaste = function (id) {
  * @return {Object}   Promise
  */
 Pastebin.prototype.createPaste = function (text, title, format, privacy, expiration) {
+    if (_.isObject(text) && typeof title === "undefined") {
+      // assume the first parameter is an object with the information
+      expiration = text.expiration;
+      privacy = text.privacy;
+      format = text.format;
+      title = text.title;
+      text = text.text;
+    }
+
     var deferred = Q.defer();
     var p = {
         api_option : 'paste',
@@ -75,6 +84,7 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
     }
 
     if (typeof privacy !== 'undefined' && privacy !== null) {
+        p.api_paste_private = privacy;
         if (privacy === 0 || privacy === 1) {
             p.api_paste_private = privacy;
         } else if (privacy === 2 || privacy === 3) {
@@ -127,6 +137,15 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
  * @return {Object}   Promise
  */
 Pastebin.prototype.createPasteFromFile = function (filename, title, format, privacy, expiration) {
+    if (_.isObject(filename) && typeof title === "undefined") {
+      // assume the first parameter is an object with the information
+      expiration = filename.expiration;
+      privacy = filename.privacy;
+      format = filename.format;
+      title = filename.title;
+      filename = filename.filename;
+    }
+
     var deferred = Q.defer();
     var self = this;
 
@@ -442,11 +461,21 @@ Pastebin.prototype.getPasteSync = function (id, callback) {
 };
 
 Pastebin.prototype.createPasteSync = function (text, title, format, privacy, expiration, callback) {
-  runWithCallback(this.createPaste(text, title, format, privacy, expiration), callback);
+  if (_.isObject(text) && _.isFunction(title)) {
+    callback = title;
+    runWithCallback(this.createPaste(text), callback);
+  } else {
+    runWithCallback(this.createPaste(text, title, format, privacy, expiration), callback);
+  }
 };
 
 Pastebin.prototype.createPasteFromFileSync = function (filename, title, format, privacy, expiration, callback) {
-  runWithCallback(this.createPasteFromFile(filename, title, format, privacy, expiration), callback);
+  if (_.isObject(text) && _.isFunction(title)) {
+    callback = title;
+    runWithCallback(this.createPasteFromFile(filename), callback);
+  } else {
+    runWithCallback(this.createPasteFromFile(filename, title, format, privacy, expiration), callback);
+  }
 };
 
 Pastebin.prototype.deletePasteSync = function (pasteID, callback) {
