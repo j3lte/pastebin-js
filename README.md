@@ -123,19 +123,19 @@ pastebin
         text: "This is a private paste",
         title: "Private",
         format: null,
-        privacy: 2, 
+        privacy: 2,
         expiration: '10M'
     })
-    
+
 pastebin
     .createPasteFromFile({
         text: "./filename.txt",
         title: "Public text file listed under my username",
         format: null,
-        privacy: 3, 
+        privacy: 3,
         expiration: '10M'
     })
-    
+
 ```
 
 ### Privacy
