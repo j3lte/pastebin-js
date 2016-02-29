@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "chai": "*",
+    "chai-as-promised": "*",
     "grunt": "*",
     "grunt-contrib-jshint": "*",
     "grunt-contrib-watch": "*",
@@ -28,7 +29,8 @@
     "grunt-simple-mocha": "*",
     "jshint-stylish": "*",
     "mocha": "*",
-    "nock": "*"
+    "nock": "*",
+    "sinon": "^1.17.3"
   },
   "repository": {
     "type": "git",

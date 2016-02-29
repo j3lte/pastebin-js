@@ -32,10 +32,10 @@ function Pastebin(config) {
 Pastebin.prototype.getPaste = function (id) {
     if (!id) {
         var deferred = Q.defer();
-        deferred.reject(new Error('[-] getPaste : No paste id given!'));
+        deferred.reject(new Error('No paste id!'));
         return deferred.promise;
     }
-    return method.get(conf.net.protocol + conf.net.base + conf.net.endpoint.raw + id, null);
+    return this._getApi(conf.net.protocol + conf.net.base + conf.net.endpoint.raw + id, null);
 };
 
 /**
@@ -207,6 +207,16 @@ Pastebin.prototype.deletePaste = function (pasteID) {
     return deferred.promise;
 };
 
+Pastebin.prototype._postAndParse = function (params, parseFunc, deferred) {
+    this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, params)
+        .then(function (data) {
+            parseFunc(data)
+                .then(deferred.resolve)
+                .fail(deferred.reject);
+        }.bind(this))
+        .fail(deferred.reject);
+};
+
 /**
  * Create userkey. Saved in config.api_user_key
  * @return {Object}   Promise
@@ -256,13 +266,7 @@ Pastebin.prototype.listUserPastes = function (limit) {
             api_results_limit : l,
             api_option : 'list'
         };
-        this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, params)
-            .then(function (data) {
-                this._parsePastes(data)
-                    .then(deferred.resolve)
-                    .fail(deferred.reject);
-            }.bind(this))
-            .fail(deferred.reject);
+        this._postAndParse(params, this._parsePastes.bind(this), deferred);
     }
 
     return deferred.promise;
@@ -278,14 +282,7 @@ Pastebin.prototype.listTrendingPastes = function () {
         api_option : 'trends',
         api_dev_key : this.config.api_dev_key
     };
-
-    this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, params)
-        .then(function (data) {
-            this._parsePastes(data)
-                .then(deferred.resolve)
-                .fail(deferred.reject);
-        }.bind(this))
-        .fail(deferred.reject);
+    this._postAndParse(params, this._parsePastes.bind(this), deferred);
 
     return deferred.promise;
 };
@@ -311,13 +308,7 @@ Pastebin.prototype.getUserInfo = function () {
             .fail(deferred.reject);
     } else {
         params.api_user_key = this.config.api_user_key;
-        this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, params)
-            .then(function (data) {
-                this._parseUser(data)
-                    .then(deferred.resolve)
-                    .fail(deferred.reject);
-            }.bind(this))
-            .fail(deferred.reject);
+        this._postAndParse(params, this._parseUser.bind(this), deferred);
     }
 
     return deferred.promise;

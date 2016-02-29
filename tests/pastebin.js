@@ -14,11 +14,7 @@ var expect = require('chai').expect,
 // BASIC TESTS
 describe('Pastebin ::', function () {
 
-    var pastebin = new Pastebin({
-      'api_dev_key' : 'xxxxxxxxxxx',
-      'api_user_name' : 'User',
-      'api_user_password' : 'Password'
-    });
+    var pastebin = new Pastebin();
 
     it('create new Pastebin', function () {
         expect(typeof pastebin).to.equal('object');
