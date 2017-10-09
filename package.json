@@ -1,6 +1,6 @@
 {
   "name": "pastebin-js",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "NodeJS module for Pastebin API",
   "main": "index",
   "bin": {
@@ -13,24 +13,24 @@
     "pastebin"
   ],
   "dependencies": {
-    "q": "*",
-    "request": "*",
-    "underscore": "*",
-    "xml2js": "*"
+    "q": "^1.5.0",
+    "request": "^2.83.0",
+    "underscore": "^1.8.3",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
-    "chai": "*",
-    "chai-as-promised": "*",
-    "grunt": "*",
-    "grunt-contrib-jshint": "*",
-    "grunt-contrib-watch": "*",
-    "grunt-jsdoc-to-markdown": "*",
-    "grunt-shell": "^1.1.1",
-    "grunt-simple-mocha": "*",
-    "jshint-stylish": "*",
-    "mocha": "*",
-    "nock": "*",
-    "sinon": "^1.17.3"
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-jsdoc-to-markdown": "^3.0.0",
+    "grunt-shell": "^1.3.1",
+    "grunt-simple-mocha": "^0.4.1",
+    "jshint-stylish": "^2.2.1",
+    "mocha": "^4.0.1",
+    "nock": "^9.0.22",
+    "sinon": "^1.17.7"
   },
   "repository": {
     "type": "git",
