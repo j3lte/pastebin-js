@@ -96,10 +96,10 @@ Pastebin.prototype.createPaste = function (text, title, format, privacy, expirat
                     .then(function () {
                         this.createPaste(text, title, format, privacy, expiration)
                             .then(deferred.resolve)
-                            .fail(deferred.reject);
+                            .catch(deferred.reject);
                         return deferred.promise;
                     }.bind(this))
-                    .fail(deferred.reject);
+                    .catch(deferred.reject);
             } else {
                 deferred.reject(new Error('Error! For this privacy level you need to be logged in! Provide username and password!'));
                 return deferred.promise;
@@ -161,7 +161,7 @@ Pastebin.prototype.createPasteFromFile = function (filename, title, format, priv
 
         self.createPaste(data, title, format, privacy, expiration)
             .then(deferred.resolve)
-            .fail(deferred.reject);
+            .catch(deferred.reject);
 
     });
 
@@ -192,13 +192,13 @@ Pastebin.prototype.deletePaste = function (pasteID) {
         params.api_user_key = this.config.api_user_key;
         this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.post, params)
             .then(deferred.resolve)
-            .fail(deferred.reject);
+            .catch(deferred.reject);
     } else if (this.config.api_user_name !== null && this.config.api_user_password !== null) {
         this.createAPIuserKey()
             .then(function () {
                 this.deletePaste(pasteID)
                     .then(deferred.resolve)
-                    .fail(deferred.reject);
+                    .catch(deferred.reject);
             }.bind(this));
     } else {
         deferred.reject(new Error('Error! Deleting a paste created by the user needs username and password'));
@@ -212,9 +212,9 @@ Pastebin.prototype._postAndParse = function (params, parseFunc, deferred) {
         .then(function (data) {
             parseFunc(data)
                 .then(deferred.resolve)
-                .fail(deferred.reject);
+                .catch(deferred.reject);
         }.bind(this))
-        .fail(deferred.reject);
+        .catch(deferred.reject);
 };
 
 /**
@@ -235,9 +235,9 @@ Pastebin.prototype.createAPIuserKey = function () {
                         deferred.resolve(true);
                     }
                 }.bind(this))
-                .fail(deferred.reject);
+                .catch(deferred.reject);
         }.bind(this))
-        .fail(deferred.reject);
+        .catch(deferred.reject);
 
     return deferred.promise;
 };
@@ -256,9 +256,9 @@ Pastebin.prototype.listUserPastes = function (limit) {
             .then(function () {
                 this.listUserPastes(limit)
                     .then(deferred.resolve)
-                    .fail(deferred.reject);
+                    .catch(deferred.reject);
             }.bind(this))
-            .fail(deferred.reject);
+            .catch(deferred.reject);
     } else {
         var params = {
             api_dev_key : this.config.api_dev_key,
@@ -303,9 +303,9 @@ Pastebin.prototype.getUserInfo = function () {
             .then(function () {
                 this.getUserInfo()
                     .then(deferred.resolve)
-                    .fail(deferred.reject);
+                    .catch(deferred.reject);
             }.bind(this))
-            .fail(deferred.reject);
+            .catch(deferred.reject);
     } else {
         params.api_user_key = this.config.api_user_key;
         this._postAndParse(params, this._parseUser.bind(this), deferred);
@@ -338,7 +338,7 @@ Pastebin.prototype._parsePastes = function (xml) {
                 deferred.reject(new Error('No data returned to _parsePastes!'));
             }
         })
-        .fail(deferred.reject);
+        .catch(deferred.reject);
 
     return deferred.promise;
 };
@@ -362,7 +362,7 @@ Pastebin.prototype._parseUser = function (xml) {
                 deferred.reject(new Error('No data returned to _parseUser!'));
             }
         })
-        .fail(deferred.reject);
+        .catch(deferred.reject);
 
     return deferred.promise;
 };
@@ -443,7 +443,7 @@ function runWithCallback(promiseFunc, callback) {
   if (!_.isFunction(callback)) { throw new Error('This function requires a callback!'); }
   promiseFunc.then(function (data) {
       callback(null, data);
-  }).fail(function (err) {
+  }).catch(function (err) {
       callback(err, null);
   });
 }
