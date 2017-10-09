@@ -16,14 +16,6 @@ module.exports = function (grunt){
                 force: false
             }
         },
-        shell: {
-            options: {
-                stderr: false
-            },
-            shrinkwrap : {
-                command: 'npm-shrinkwrap'
-            }
-        },
         watch : {
             jshint : {
                 files : '<%= jshint.all %>',
@@ -48,7 +40,7 @@ module.exports = function (grunt){
     grunt.registerTask('default', ['jshint']);
 
     grunt.registerTask('test', ['jshint', 'simplemocha']);
-    grunt.registerTask('build', ['test', 'shell:shrinkwrap']);
+    grunt.registerTask('build', ['test']);
 
     grunt.registerTask('dev', ['test', 'watch']);
 };
