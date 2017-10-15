@@ -129,7 +129,7 @@ pastebin
 
 pastebin
     .createPasteFromFile({
-        text: "./filename.txt",
+        filename: "./filename.txt",
         title: "Public text file listed under my username",
         format: null,
         privacy: 3,
