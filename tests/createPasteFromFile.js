@@ -9,6 +9,7 @@
  */
 var chai = require('chai');
 var sinon = require('sinon');
+var path = require('path');
 chai.should();
 var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
@@ -28,9 +29,10 @@ var stubber = function (returnValue, error) {
 };
 
 // BASIC TESTS
-describe('Pastebin :: createPaste', function () {
+describe('Pastebin :: createPasteFromFile', function () {
 
     var pastebin = new Pastebin({});
+    var filename = path.join(__dirname, 'textfile.txt');
 
     afterEach(function () {
       pastebin._postApi.restore && pastebin._postApi.restore();
@@ -40,31 +42,27 @@ describe('Pastebin :: createPaste', function () {
       sinon.stub(pastebin, '_postApi', stubber('', false)); // Just to make sure we're not posting to Pastebin while testing
     });
 
-    it('reject with error if no paste text', function () {
-      return pastebin.createPaste({}).should.be.rejectedWith('Error! Paste can only be a text!');
-    });
-
-    it('reject with error if no paste text in object', function () {
-      return pastebin.createPaste({}).should.be.rejectedWith('Error! Paste can only be a text!');
+    it('reject with error if no paste filename', function () {
+      return pastebin.createPasteFromFile({}).should.be.rejectedWith('Filename not provided');
     });
 
     it('fulfilles with a paste ID', function () {
       pastebin._postApi.restore && pastebin._postApi.restore();
       sinon.stub(pastebin, '_postApi', stubber('As3IMeWV', false));
-      return pastebin.createPaste('Test').should.eventually.equal('As3IMeWV');
+      return pastebin.createPasteFromFile(filename).should.eventually.equal('As3IMeWV');
     });
 
     it('reject with error if format cannot be found', function () {
-      return pastebin.createPaste('Test', null, 'unknown-script').should.be.rejectedWith('Error! Paste format unknown-script is unknown.');
+      return pastebin.createPasteFromFile(filename, null, 'unknown-script').should.be.rejectedWith('Error! Paste format unknown-script is unknown.');
     });
 
     it('reject with error if expiration cannot be found', function () {
-      return pastebin.createPaste('Test', null, null, null, '1Y').should.be.rejectedWith('Error! Paste expiration 1Y is unknown.');
+      return pastebin.createPasteFromFile(filename, null, null, null, '1Y').should.be.rejectedWith('Error! Paste expiration 1Y is unknown.');
     });
 
     it('reject with error if privacy is set but no user & password are found', function () {
       var pb = new Pastebin();
       sinon.stub(pb, '_postApi', stubber('', false)); // Just to make sure we're not posting to Pastebin while testing
-      return pb.createPaste('Test', null, null, 2, null).should.be.rejectedWith('Error! For this privacy level you need to be logged in! Provide username and password!');
+      return pb.createPasteFromFile(filename, null, null, 2, null).should.be.rejectedWith('Error! For this privacy level you need to be logged in! Provide username and password!');
     });
 });

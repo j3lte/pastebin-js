@@ -150,20 +150,20 @@ Pastebin.prototype.createPasteFromFile = function (filename, title, format, priv
     var deferred = Q.defer();
     var self = this;
 
-    if (!filename) {
-        deferred.reject(new Error('Filename not provided!'));
+    if ('undefined' === typeof filename || !filename) {
+        deferred.reject(new Error('Filename not provided'));
+    } else {
+        fs.readFile(filename, 'UTF8', function (err, data) {
+            if (err) {
+                deferred.reject(new Error('Readfile error: ' + err));
+            }
+
+            self.createPaste(data, title, format, privacy, expiration)
+                .then(deferred.resolve)
+                .catch(deferred.reject);
+
+        });
     }
-
-    fs.readFile(filename, 'UTF8', function (err, data) {
-        if (err) {
-            deferred.reject(new Error('Readfile error: ' + err));
-        }
-
-        self.createPaste(data, title, format, privacy, expiration)
-            .then(deferred.resolve)
-            .catch(deferred.reject);
-
-    });
 
     return deferred.promise;
 };
