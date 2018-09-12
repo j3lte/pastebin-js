@@ -39,7 +39,7 @@ describe('Pastebin :: createPasteFromFile', function () {
     });
 
     beforeEach(function () {
-      sinon.stub(pastebin, '_postApi', stubber('', false)); // Just to make sure we're not posting to Pastebin while testing
+      sinon.stub(pastebin, '_postApi').callsFake(stubber('', false)); // Just to make sure we're not posting to Pastebin while testing
     });
 
     it('reject with error if no paste filename', function () {
@@ -48,7 +48,7 @@ describe('Pastebin :: createPasteFromFile', function () {
 
     it('fulfilles with a paste ID', function () {
       pastebin._postApi.restore && pastebin._postApi.restore();
-      sinon.stub(pastebin, '_postApi', stubber('As3IMeWV', false));
+      sinon.stub(pastebin, '_postApi').callsFake(stubber('As3IMeWV', false));
       return pastebin.createPasteFromFile(filename).should.eventually.equal('As3IMeWV');
     });
 
@@ -62,7 +62,7 @@ describe('Pastebin :: createPasteFromFile', function () {
 
     it('reject with error if privacy is set but no user & password are found', function () {
       var pb = new Pastebin();
-      sinon.stub(pb, '_postApi', stubber('', false)); // Just to make sure we're not posting to Pastebin while testing
+      sinon.stub(pb, '_postApi').callsFake(stubber('', false)); // Just to make sure we're not posting to Pastebin while testing
       return pb.createPasteFromFile(filename, null, null, 2, null).should.be.rejectedWith('Error! For this privacy level you need to be logged in! Provide username and password!');
     });
 });

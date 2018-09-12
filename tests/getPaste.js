@@ -38,12 +38,12 @@ describe('Pastebin :: getPaste', function () {
     pastebin = new Pastebin({});
 
     it('reject with error if no paste ID', function () {
-      sinon.stub(pastebin, '_getApi', stubber('paste content', false));
+      sinon.stub(pastebin, '_getApi').callsFake(stubber('paste content', false));
       return pastebin.getPaste().should.be.rejectedWith('No paste id!');
     });
 
     it('fulfilles with a paste ID', function () {
-      sinon.stub(pastebin, '_getApi', stubber('This is a paste content', false));
+      sinon.stub(pastebin, '_getApi').callsFake(stubber('This is a paste content', false));
       return pastebin.getPaste('As3IMeWV').should.eventually.equal('This is a paste content');
     });
 });
