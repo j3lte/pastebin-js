@@ -14,7 +14,7 @@
   ],
   "dependencies": {
     "q": "^1.5.0",
-    "request": "^2.83.0",
+    "request": "^2.84.0",
     "underscore": "^1.8.3",
     "xml2js": "^0.4.19"
   },
