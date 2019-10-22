@@ -3,7 +3,7 @@
  * pastebin-js
  * https://github.com/j3lte/pastebin-js
  *
- * Copyright (c) 2013-2017 Jelte Lagendijk
+ * Copyright (c) 2013-2019 Jelte Lagendijk
  * Licensed under the MIT license.
  */
 
