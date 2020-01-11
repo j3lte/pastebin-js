@@ -88,6 +88,8 @@ pastebin
   })
 ```
 
+**pastebin.getPaste(pasteID, isPrivate)** : get a private paste. Set ``isPrivate`` to ``true``. You will need to provide a username & password in your config!
+
 **pastebin.getUserInfo()** : gets the userinfo
 
 **pastebin.listUserPastes(limit)** : gets a list of pastes from the user. ``limit`` is optional, from 1 - 100 (default: 50)
