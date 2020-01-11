@@ -26,16 +26,43 @@ function Pastebin(config) {
 
 /**
  * Get a paste
- * @param  {String}   id    Id of the paste
- * @return {Object}         Promise
+ * @param  {String}    id         Id of the paste
+ * @param  {Boolean}   isPrivate  Is this a private paste? Optional
+ * @return {Object}               Promise
  */
-Pastebin.prototype.getPaste = function (id) {
+Pastebin.prototype.getPaste = function (id, isPrivate) {
     if (!id) {
         var deferred = Q.defer();
         deferred.reject(new Error('No paste id!'));
         return deferred.promise;
     }
-    return this._getApi(conf.net.protocol + conf.net.base + conf.net.endpoint.raw + id, null);
+    if (isPrivate) {
+        var p = {
+            api_option : 'show_paste',
+            api_dev_key : this.config.api_dev_key,
+            api_paste_key : id,
+        };
+        var deferred = Q.defer();
+        if (this.config.api_user_key) {
+            p.api_user_key = this.config.api_user_key;
+        } else if (this.config.api_user_name !== null && this.config.api_user_password !== null) {
+            this
+                .createAPIuserKey()
+                    .then(function () {
+                        this.getPaste(id, isPrivate)
+                            .then(deferred.resolve)
+                            .catch(deferred.reject);
+                        return deferred.promise;
+                    }.bind(this))
+                    .catch(deferred.reject);
+            return deferred.promise;
+        } else {
+            deferred.reject(new Error('Error! For private pastes you need to be logged in! Provide username and password!'));
+            return deferred.promise;
+        }
+        return this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.apiraw, p);
+    }
+    return this._getApi(conf.net.protocol + conf.net.base + conf.net.endpoint.api + id, null);
 };
 
 /**

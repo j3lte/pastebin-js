@@ -1,6 +1,6 @@
 {
   "name": "pastebin-js",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "NodeJS module for Pastebin API",
   "main": "index",
   "bin": {
