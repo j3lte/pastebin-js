@@ -62,7 +62,7 @@ Pastebin.prototype.getPaste = function (id, isPrivate) {
         }
         return this._postApi(conf.net.protocol + conf.net.base + conf.net.endpoint.apiraw, p);
     }
-    return this._getApi(conf.net.protocol + conf.net.base + conf.net.endpoint.api + id, null);
+    return this._getApi(conf.net.protocol + conf.net.base + conf.net.endpoint.raw + id, null);
 };
 
 /**
