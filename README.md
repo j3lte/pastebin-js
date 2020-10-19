@@ -41,7 +41,7 @@ var PastebinAPI = require('pastebin-js'),
 pastebin
     .createPasteFromFile("./uploadthistopastebin.txt", "pastebin-js test", null, 1, "N")
     .then(function (data) {
-        // we have succesfully pasted it. Data contains the id
+        // we have successfully pasted it. Data contains the id
         console.log(data);
     })
     .fail(function (err) {
@@ -106,7 +106,7 @@ If ``privacy`` is set to **2** or **3**, you will need to provide a username && 
 pastebin
   .createPaste("Test from pastebin-js", "pastebin-js")
   .then(function (data) {
-    // paste succesfully created, data contains the id
+    // paste successfully created, data contains the id
     console.log(data);
   })
   .fail(function (err) {
