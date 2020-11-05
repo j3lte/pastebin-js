@@ -1,6 +1,12 @@
 pastebin-js
 ===========
 
+
+
+> Update 2020-11-05 --- I consider this package to be **deprecated**. Please install [pastebin-ts](https://www.npmjs.com/package/pastebin-ts) for an up to date wrapper for Pastebin! Active development on the current package is halted
+
+
+
 [![NPM](https://nodei.co/npm/pastebin-js.svg?downloads=true&stars=true)](https://nodei.co/npm/pastebin-js/)
 
 [![Build Status](https://travis-ci.org/j3lte/pastebin-js.svg?branch=master)](https://travis-ci.org/j3lte/pastebin-js)
