@@ -3,7 +3,7 @@ pastebin-js
 
 
 
-> Update 2020-11-05 --- I consider this package to be **deprecated**. Please install [pastebin-ts](https://www.npmjs.com/package/pastebin-ts) for an up to date wrapper for Pastebin! Active development on the current package is halted
+> Update 2023-11-22 --- I consider this package to be **deprecated**. Please install [pastedeno](https://www.npmjs.com/package/pastedeno) for an up to date wrapper for Pastebin! Active development on the current package is halted
 
 
 
